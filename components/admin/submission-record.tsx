@@ -1,0 +1,79 @@
+import type { Submission } from "@/lib/admin/data"
+import { DocumentLink } from "./document-link"
+
+const labels: Record<string, string> = {
+  dialogue: "對話風險",
+  url: "連結查證",
+  account: "帳號查證",
+  chat: "小客服",
+}
+const timeFormatter = new Intl.DateTimeFormat("zh-TW", {
+  timeZone: "Asia/Taipei",
+  dateStyle: "medium",
+  timeStyle: "short",
+})
+
+function displayTime(value: string) {
+  const date = new Date(value)
+  return Number.isFinite(date.getTime()) ? timeFormatter.format(date) : value
+}
+
+export function SubmissionRecord({ record }: { record: Submission }) {
+  const { request, response } = record
+  const selectedMessages = request.selectedMessages ?? []
+  const results = Object.entries(response?.results ?? {})
+
+  return (
+    <details className="rounded-xl border bg-card">
+      <summary className="cursor-pointer rounded-xl px-4 py-3 outline-offset-[-2px] focus-visible:outline-2">
+        <span className="ml-1 font-medium">{displayTime(record.created_at)}</span>
+        <span className="ml-3 break-all font-mono text-xs text-muted-foreground">{record.session_id}</span>
+      </summary>
+      <div className="space-y-5 border-t p-4 text-sm">
+        <p className="break-all text-xs text-muted-foreground">提交 {record.submission_id} · 劇本 {record.script_version}</p>
+        <div className="grid gap-6 md:grid-cols-2">
+          <section className="min-w-0 space-y-2">
+            <h3 className="font-semibold">受測者輸入</h3>
+            {request.text && <p className="break-all whitespace-pre-wrap">文字：{request.text}</p>}
+            {request.url && <p className="break-all">網址：{request.url}</p>}
+            {request.accountId && <p className="break-all">帳號：{request.accountId}</p>}
+            {selectedMessages.length > 0 && (
+              <div>
+                <p>勾選訊息</p>
+                <ul className="mt-1 space-y-1 rounded-lg bg-muted p-3">
+                  {selectedMessages.map((message) => (
+                    <li key={message.id} className="break-all whitespace-pre-wrap">{message.text}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+          <section className="min-w-0 space-y-2">
+            <h3 className="font-semibold">查證回覆</h3>
+            {!response && <p className="text-muted-foreground">處理中或尚無回覆。</p>}
+            {results.map(([kind, result]) => (
+              <p key={kind} className="break-all">
+                <span className="font-medium">{labels[kind] ?? kind}：</span>
+                {result.summary}{result.status === "failed" && "（可重試）"}
+                {result.sourceUrl && <> · <DocumentLink href={result.sourceUrl}>查證來源</DocumentLink></>}
+              </p>
+            ))}
+            {response?.explanation && <p className="break-all whitespace-pre-wrap">{response.explanation}</p>}
+            {response?.aiStatus === "unavailable" && <p className="text-muted-foreground">AI 說明暫時無法產生。</p>}
+            {!!response?.cases?.length && (
+              <ul className="space-y-2">
+                {response.cases.map((entry) => (
+                  <li key={entry.id} className="rounded-lg bg-muted p-3">
+                    <p className="font-medium">{entry.title}</p>
+                    <p className="mt-1 break-all whitespace-pre-wrap">{entry.summary}</p>
+                    <p className="mt-1 text-xs"><DocumentLink href={entry.sourceUrl}>{entry.sourceName}</DocumentLink></p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+      </div>
+    </details>
+  )
+}
