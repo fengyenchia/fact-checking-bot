@@ -13,13 +13,30 @@ type ConversationParams = Promise<{ conversationId: string }>;
 async function ConversationContent({ params }: { params: ConversationParams }) {
   const { conversationId } = await params;
   if (conversationId !== ticketConversationId) notFound();
-  return <Conversation canRestart={process.env.NODE_ENV === "development" || process.env.VERCEL_ENV === "preview"} />;
+  return (
+    <Conversation
+      canRestart={
+        process.env.NODE_ENV === "development" ||
+        process.env.VERCEL_ENV === "preview"
+      }
+    />
+  );
 }
 
-export default function ConversationPage({ params }: { params: ConversationParams }) {
+export default function ConversationPage({
+  params,
+}: {
+  params: ConversationParams;
+}) {
   return (
     <ThreadsShell active="messages">
-      <Suspense fallback={<p role="status" className="p-4 text-sm text-neutral-500">載入聊天室…</p>}>
+      <Suspense
+        fallback={
+          <p role="status" className="p-4 text-sm text-neutral-500">
+            載入聊天室…
+          </p>
+        }
+      >
         <ConversationContent params={params} />
       </Suspense>
     </ThreadsShell>

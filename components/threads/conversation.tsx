@@ -17,6 +17,7 @@ import {
   scenarioVersion,
   ticketReply,
   ticketSellerId,
+  ticketSellerName,
   type ScriptMessage,
 } from "@/data/scenarios/ticket";
 import { Avatar } from "./avatar";
@@ -132,7 +133,8 @@ export function Conversation({ canRestart }: { canRestart: boolean }) {
 
   return (
     <main className="relative flex h-[calc(100dvh-3.5rem-env(safe-area-inset-bottom))] min-h-0 flex-col">
-      <header className="flex shrink-0 items-center gap-2 border-b border-neutral-200 px-2 pt-[env(safe-area-inset-top)] sm:px-4">
+      {dialogueSelecting && <div aria-hidden="true" className="fixed inset-0 z-30 bg-black/40" />}
+      <header inert={dialogueSelecting} className="flex shrink-0 items-center gap-2 border-b border-neutral-200 px-2 pt-[env(safe-area-inset-top)] sm:px-4">
         <Link
           href="/messages"
           aria-label="返回訊息列表"
@@ -141,9 +143,10 @@ export function Conversation({ canRestart }: { canRestart: boolean }) {
           <IconChevronLeft className="size-5" />
         </Link>
         <Avatar className="size-9" />
-        <h1 className="mr-auto min-w-0 truncate py-3 text-[15px] font-semibold">
-          {ticketSellerId}
-        </h1>
+        <div className="mr-auto min-w-0 py-2">
+          <h1 className="truncate text-[15px] font-semibold">{ticketSellerName}</h1>
+          <p className="truncate text-xs text-neutral-500">@{ticketSellerId}</p>
+        </div>
         {canRestart && session && (
           <Button
             variant="ghost"
@@ -157,12 +160,19 @@ export function Conversation({ canRestart }: { canRestart: boolean }) {
           <IconDotsCircleHorizontal className="size-5" />
         </span>
       </header>
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-3.5 pb-24 sm:px-5">
-        <div className="py-7 text-center">
-          <Avatar className="mx-auto mb-2 size-16" />
-          <p className="text-[18px] font-semibold">{ticketSellerId}</p>
-        </div>
-        <ol className="space-y-2.5" aria-label="對話訊息">
+      <div className={`min-h-0 flex-1 px-3.5 sm:px-5 ${dialogueSelecting ? "relative z-40 flex flex-col py-3" : "overflow-y-auto overscroll-y-contain pb-24"}`}>
+        {!dialogueSelecting && (
+          <div className="py-7 text-center">
+            <Avatar className="mx-auto mb-2 size-16" />
+            <p className="text-[18px] font-semibold">{ticketSellerName}</p>
+            <p className="text-sm text-neutral-500">@{ticketSellerId}</p>
+          </div>
+        )}
+        <ol
+          className={`space-y-2.5 ${dialogueSelecting ? "min-h-0 overflow-y-auto overscroll-y-contain bg-white p-3" : ""}`}
+          aria-label="對話訊息"
+          aria-describedby={dialogueSelecting ? "dialogue-selection-hint" : undefined}
+        >
           {messages.map((message) => (
             <ConversationMessage
               key={message.id}
@@ -179,10 +189,15 @@ export function Conversation({ canRestart }: { canRestart: boolean }) {
             />
           ))}
         </ol>
+        {dialogueSelecting && (
+          <p id="dialogue-selection-hint" className="widget-font text-widget-body mt-2 shrink-0 self-center bg-yellow3 px-4 py-1 text-black">
+            點選以選取對話
+          </p>
+        )}
         <div ref={tail} />
       </div>
       <form
-        className="flex shrink-0 items-center gap-2 bg-white px-3 py-2 sm:px-5"
+        className={dialogueSelecting ? "hidden" : "flex shrink-0 items-center gap-2 bg-white px-3 py-2 sm:px-5"}
         onSubmit={(event) => {
           event.preventDefault();
           send();

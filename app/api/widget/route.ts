@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { getDatabase } from "@/lib/server/database"
-import { processSubmission, validateSubmission, type WidgetResponse } from "@/lib/server/verification"
+import { processSubmission, validateSubmission, type PriorChatTurn, type WidgetResponse } from "@/lib/server/verification"
 
 const maxBodySize = 16_000
 const responseHeaders = { "Cache-Control": "no-store" }
@@ -102,10 +102,10 @@ export async function POST(request: Request) {
       return json({ error: "查證仍在處理中，請稍後重試。" }, 409)
     }
 
-    const priorText: string[] = []
+    let priorTurns: PriorChatTurn[] = []
     if (input.text) {
       const previous = await sql`
-        SELECT left(request->>'text', 300) AS question
+        SELECT left(request->>'text', 300) AS question, left(response->>'explanation', 400) AS answer
         FROM widget_submissions
         WHERE session_id = ${sessionId} AND script_version = ${scriptVersion}
           AND submission_id <> ${submissionId}
@@ -114,10 +114,13 @@ export async function POST(request: Request) {
         ORDER BY created_at DESC
         LIMIT 2
       `
-      priorText.push(...previous.map((row) => String(row.question)))
+      priorTurns = previous.reverse().map((row) => ({
+        question: String(row.question),
+        answer: typeof row.answer === "string" ? row.answer : null,
+      }))
     }
 
-    const output = await processSubmission(input, priorText)
+    const output = await processSubmission(input, priorTurns)
     const [saved] = await sql`
       UPDATE widget_submissions SET response = ${JSON.stringify(output)}::jsonb
       WHERE session_id = ${sessionId} AND submission_id = ${submissionId}

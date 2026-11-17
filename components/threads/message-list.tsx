@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { IconEdit, IconSearch } from "@tabler/icons-react";
-import { openingMessages, ticketConversationHref, ticketSellerId } from "@/data/scenarios/ticket";
+import { openingMessages, ticketConversationHref, ticketSellerId, ticketSellerName } from "@/data/scenarios/ticket";
 import { Avatar } from "./avatar";
 
 export function MessageList() {
@@ -18,7 +18,10 @@ export function MessageList() {
       <Link href={ticketConversationHref} className="-mx-2 mt-5 flex min-w-0 items-center gap-3 rounded-2xl p-2 hover:bg-neutral-50">
         <Avatar className="size-12" />
         <div className="min-w-0">
-          <div className="font-semibold">{ticketSellerId}</div>
+          <div className="flex min-w-0 flex-wrap items-baseline gap-x-2">
+            <span className="font-semibold">{ticketSellerName}</span>
+            <span className="text-xs text-neutral-500">@{ticketSellerId}</span>
+          </div>
           <p className="truncate text-sm text-neutral-500">{openingMessages[0].text}</p>
         </div>
       </Link>

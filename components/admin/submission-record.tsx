@@ -1,4 +1,4 @@
-import type { Submission } from "@/lib/admin/data"
+import type { Submission, SubmissionSession } from "@/lib/admin/data"
 import { DocumentLink } from "./document-link"
 
 const labels: Record<string, string> = {
@@ -18,22 +18,43 @@ function displayTime(value: string) {
   return Number.isFinite(date.getTime()) ? timeFormatter.format(date) : value
 }
 
-export function SubmissionRecord({ record }: { record: Submission }) {
+export function SubmissionGroup({ group }: { group: SubmissionSession }) {
+  return (
+    <section className="space-y-3 rounded-2xl border border-neutral-300 bg-neutral-200 p-4 dark:border-neutral-700 dark:bg-neutral-800" aria-labelledby={`session-${group.id}`}>
+      <header className="space-y-1">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h3 id={`session-${group.id}`} className="font-semibold">最近查證 {displayTime(group.latestAt)}</h3>
+          <p className="text-sm text-muted-foreground">{group.records.length} 筆查證</p>
+        </div>
+        <p className="break-all text-xs text-muted-foreground">場次 ID <span className="font-mono">{group.id}</span></p>
+      </header>
+      {group.records.map((record) => <SubmissionRecord key={record.submission_id} record={record} />)}
+    </section>
+  )
+}
+
+function SubmissionRecord({ record }: { record: Submission }) {
   const { request, response } = record
   const selectedMessages = request.selectedMessages ?? []
   const results = Object.entries(response?.results ?? {})
+  const checkTypes = [
+    selectedMessages.length > 0 && labels.dialogue,
+    request.url && labels.url,
+    request.accountId && labels.account,
+    request.text && labels.chat,
+  ].filter(Boolean).join("、")
 
   return (
     <details className="rounded-xl border bg-card">
       <summary className="cursor-pointer rounded-xl px-4 py-3 outline-offset-[-2px] focus-visible:outline-2">
-        <span className="ml-1 font-medium">{displayTime(record.created_at)}</span>
-        <span className="ml-3 break-all font-mono text-xs text-muted-foreground">{record.session_id}</span>
+        <span className="ml-1 font-medium">{checkTypes || "查證紀錄"}</span>
+        <span className="ml-3 text-xs text-muted-foreground">{displayTime(record.created_at)}</span>
       </summary>
       <div className="space-y-5 border-t p-4 text-sm">
         <p className="break-all text-xs text-muted-foreground">提交 {record.submission_id} · 劇本 {record.script_version}</p>
         <div className="grid gap-6 md:grid-cols-2">
           <section className="min-w-0 space-y-2">
-            <h3 className="font-semibold">受測者輸入</h3>
+            <h4 className="font-semibold">受測者輸入</h4>
             {request.text && <p className="break-all whitespace-pre-wrap">文字：{request.text}</p>}
             {request.url && <p className="break-all">網址：{request.url}</p>}
             {request.accountId && <p className="break-all">帳號：{request.accountId}</p>}
@@ -49,7 +70,7 @@ export function SubmissionRecord({ record }: { record: Submission }) {
             )}
           </section>
           <section className="min-w-0 space-y-2">
-            <h3 className="font-semibold">查證回覆</h3>
+            <h4 className="font-semibold">查證回覆</h4>
             {!response && <p className="text-muted-foreground">處理中或尚無回覆。</p>}
             {results.map(([kind, result]) => (
               <p key={kind} className="break-all">

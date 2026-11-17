@@ -41,7 +41,13 @@ export type Submission = {
   } | null
 }
 
-export const submissionsPerPage = 25
+export type SubmissionSession = {
+  id: string
+  latestAt: string
+  records: Submission[]
+}
+
+const sessionsPerPage = 10
 
 export async function readSubmissions(session: string, page: number) {
   await requireAdmin()
@@ -49,17 +55,36 @@ export async function readSubmissions(session: string, page: number) {
   if (!sql) return null
 
   const [records, sessions] = await Promise.all([
-    sql`SELECT session_id, submission_id, script_version, request, response, created_at
-        FROM widget_submissions
-        WHERE (${session} = '' OR session_id = ${session})
-        ORDER BY created_at DESC, submission_id DESC
-        LIMIT ${submissionsPerPage + 1} OFFSET ${(page - 1) * submissionsPerPage}`,
+    sql`WITH candidates AS (
+          SELECT session_id, max(created_at) AS latest_at
+          FROM widget_submissions
+          WHERE (${session} = '' OR session_id = ${session})
+          GROUP BY session_id
+          ORDER BY latest_at DESC, session_id DESC
+          LIMIT ${sessionsPerPage + 1} OFFSET ${(page - 1) * sessionsPerPage}
+        ), session_page AS (
+          SELECT session_id, latest_at, count(*) OVER () > ${sessionsPerPage} AS has_more
+          FROM candidates
+          ORDER BY latest_at DESC, session_id DESC
+          LIMIT ${sessionsPerPage}
+        )
+        SELECT s.session_id, s.submission_id, s.script_version, s.request, s.response, s.created_at,
+               p.latest_at, p.has_more
+        FROM session_page p JOIN widget_submissions s USING (session_id)
+        ORDER BY p.latest_at DESC, p.session_id DESC, s.created_at, s.submission_id`,
     sql`SELECT session_id FROM widget_submissions
-        GROUP BY session_id ORDER BY max(created_at) DESC LIMIT 100`,
+        GROUP BY session_id ORDER BY max(created_at) DESC, session_id DESC LIMIT 100`,
   ])
+  const rows = records as (Submission & { latest_at: string; has_more: boolean })[]
+  const groups = new Map<string, SubmissionSession>()
+  for (const record of rows) {
+    const group = groups.get(record.session_id)
+    if (group) group.records.push(record)
+    else groups.set(record.session_id, { id: record.session_id, latestAt: record.latest_at, records: [record] })
+  }
   return {
-    records: records.slice(0, submissionsPerPage) as Submission[],
-    more: records.length > submissionsPerPage,
+    groups: [...groups.values()],
+    more: rows[0]?.has_more ?? false,
     sessions: (sessions as { session_id: string }[]).map((row) => row.session_id),
   }
 }
@@ -160,7 +185,7 @@ export async function readAccounts() {
 export async function writeAccount(id: string | null, form: FormData) {
   const sql = await editableDatabase()
   const accountId = id ?? readValue(form, "id", "Threads 帳號", 60, true).replace(/^@/, "").toLowerCase()
-  if (!/^[a-z0-9_.]+$/.test(accountId)) throw new InvalidAdminInput("請填寫 Threads 使用者名稱，例如 weekend.stage。")
+  if (!/^[a-z0-9_.]+$/.test(accountId)) throw new InvalidAdminInput("請填寫 Threads 使用者名稱，例如 giveme_money。")
 
   const caseStatus = readValue(form, "caseStatus", "案件狀態", 80, true)
   const sourceUrl = parseSourceUrl(readValue(form, "sourceUrl", "資料連結", 2048, true), true)

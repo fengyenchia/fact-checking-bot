@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { IconBrandThreads, IconChevronRight, IconDots, IconHeart, IconMenu2, IconMessageCircle, IconRepeat, IconSearch, IconSend2, IconShieldCheck } from "@tabler/icons-react";
-import { CaseCard, type CaseCardData } from "@/components/case-card";
+import { IconBrandThreads, IconChevronRight, IconDots, IconHeart, IconMenu2, IconMessageCircle, IconRepeat, IconSearch, IconSend2 } from "@tabler/icons-react";
+import { CaseCarousel, type CaseCardData } from "@/components/case-card";
 import { featuredPost, posts, type ThreadPost } from "@/data/posts";
 import { Avatar } from "./avatar";
 
@@ -24,12 +24,7 @@ function PostRow({ post, cases }: { post: ThreadPost; cases: CaseCardData[] }) {
           {metricIcons.map((Icon, i) => <span key={i} className="flex items-center gap-1"><Icon className="size-[21px]" stroke={1.7} />{post.counts[i] || ""}</span>)}
         </div>
         {cases.length > 0 && (
-          <section aria-label="相關案例" className="mt-4 min-w-0">
-            <h2 className="mb-2 flex items-center gap-1.5 text-[13px] font-semibold"><IconShieldCheck className="size-4" />相關案例</h2>
-            <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-2">
-              {cases.map((item) => <div key={item.id} className="w-[min(240px,85%)] shrink-0 snap-start"><CaseCard item={item} /></div>)}
-            </div>
-          </section>
+          <div className="mt-4"><CaseCarousel cases={cases} headingAlign="left" /></div>
         )}
       </div>
     </article>

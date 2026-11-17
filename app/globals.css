@@ -2,51 +2,37 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", "Microsoft JhengHei", sans-serif;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+@font-face {
+  font-family: "Widget Noto Sans TC";
+  src: url("/NotoSansTC-VF.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
 }
 
+@font-face {
+  font-family: "Widget Huninn";
+  src: url("/Huninn-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@custom-variant dark (&:is(.dark *));
+
 :root {
+  --black: #000000;
+  --black2: #464646;
+  --black3: #6E6E6E;
+  --black4: #D9D9D9;
+  --yellow: #FECE2E;
+  --yellow2: #FFDE71;
+  --yellow3: #FFEAA4;
+  --orange: #F98B23;
+  --orange2: #FFB978;
+  --blue: #A4DFFF;
+  --green: #B5E59B;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -115,6 +101,61 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@theme inline {
+  --color-yellow: var(--yellow);
+  --color-yellow2: var(--yellow2);
+  --color-yellow3: var(--yellow3);
+  --color-black: var(--black);
+  --color-black2: var(--black2);
+  --color-black3: var(--black3);
+  --color-orange: var(--orange);
+  --color-orange2: var(--orange2);
+  --color-blue: var(--blue);
+  --color-green: var(--green);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", "Microsoft JhengHei", sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-widget: 20px;
+}
+
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -124,5 +165,59 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+
+@layer components {
+  .widget-font {
+    font-family: "Widget Huninn", var(--font-sans, sans-serif);
+  }
+
+  .text-widget-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: normal;
+    font-family: "Widget Noto Sans TC", var(--font-sans, sans-serif);
+  }
+
+  .text-widget-subtitle,
+  .btn {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .text-widget-body {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .text-widget-note {
+    font-size: 1rem;
+    line-height: normal;
+    color: var(--black3);
+  }
+
+  .text-widget-warning {
+    font-family: "Widget Noto Sans TC", var(--font-sans, sans-serif);
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0;
+    color: var(--black);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-widget px-4 py-2 font-normal transition-colors duration-300 border border-black disabled:pointer-events-none disabled:opacity-50 cursor-pointer;
+  }
+
+  /* yellow */
+  .btn-yellow {
+    @apply bg-yellow text-black hover:bg-yellow3;
+  }
+
+  /* black */
+  .btn-black {
+    @apply bg-black text-white hover:bg-black3;
   }
 }
