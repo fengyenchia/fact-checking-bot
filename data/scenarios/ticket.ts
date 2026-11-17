@@ -1,7 +1,7 @@
 export const scenarioVersion = "ticket-v1";
 export const ticketSellerName = "是詐騙ㄛ";
 export const ticketSellerId = "giveme_money";
-export const ticketConversationId = "weekend-stage";
+export const ticketConversationId = ticketSellerId;
 export const ticketConversationHref = `/messages/${ticketConversationId}`;
 export const ticketReply = "轉好帳了";
 export const messageIntervalMs = 1000;

@@ -12,7 +12,7 @@ pnpm dev
 ```
 
 - 開啟終端顯示的網址，點第一篇門票串文的頭貼 → 送出「轉好帳了」→ 點「查證」。
-- 本機可先用預覽案例與模擬回覆。要測 AI、案例檢索與後台紀錄，請設定下方的 Neon 和 OpenAI。
+- 本機可先用預覽案例與模擬回覆。連結 AI 補查使用 OpenAI 金鑰。要測 AI 回覆、案例檢索與後台紀錄，請一併設定 Neon。
 
 ## 連接 Neon、OpenAI 與 Vercel
 
@@ -26,7 +26,7 @@ pnpm dev
 | 路徑 | 用途 |
 | --- | --- |
 | `/` | Threads 首頁。點第一篇門票文頭貼進聊天室。 |
-| `/messages` · `/messages/weekend-stage` | 聊天列表與門票聊天室。「查證」在聊天室內開啟 Widget。 |
+| `/messages` · `/messages/giveme_money` | 聊天列表與門票聊天室。「查證」在聊天室內開啟 Widget。 |
 | `/admin/login` · `/admin` | 後台登入與測試紀錄。按場次分組，可展開各筆輸入與回覆。 |
 | `/admin/cases` · `/admin/accounts` | 維護官方案例、更新首頁案例卡、管理可疑 Threads 帳號。 |
 
@@ -38,13 +38,13 @@ pnpm dev
 | --- | --- | --- |
 | 第一篇門票串文 | [data/posts.ts](data/posts.ts#L12) | 改 `featuredPost` 的主題 `topic`、正文 `text`、時間或互動數。改主題或正文後，到後台按「更新首頁案例卡」。 |
 | 首頁其他串文 | [data/posts.ts](data/posts.ts#L21) | 在 `posts` 增修一般串文的帳號、正文、時間與互動數。 |
-| 賣家帳號與聊天室劇本 | [data/scenarios/ticket.ts](data/scenarios/ticket.ts#L1) | 改 `ticketSellerName`、`ticketSellerId`、預填回覆 `ticketReply`、訊息間隔 `messageIntervalMs`，以及 `openingMessages`、`followUpMessages` 的台詞與示例網址。修改賣家 ID 後，同步調整後台測試帳號。 |
+| 賣家帳號與聊天室劇本 | [data/scenarios/ticket.ts](data/scenarios/ticket.ts#L1) | 改 `ticketSellerName`、`ticketSellerId`、預填回覆 `ticketReply`、訊息間隔 `messageIntervalMs`，以及 `openingMessages`、`followUpMessages` 的台詞與示例網址。聊天室路徑跟著賣家 ID 更新，後台測試帳號須同步調整。 |
 | 本機預覽案例卡 | [data/preview-cases.ts](data/preview-cases.ts#L7) | 改 `previewCases` 的標題、短摘要與來源。首頁未連 Neon 時使用這組卡。 |
 | 官方案例與首頁選卡 | 後台 `/admin/cases` | 編輯商品類別、案例原文、發布日期、縣市和來源。要重選首頁案例時按「更新首頁案例卡」。 |
 | 可疑 Threads 帳號 | 後台 `/admin/accounts` | 維護帳號 ID、案件狀態、查詢人數和資料連結。 |
 | 網址查證的官方主機 | [lib/server/official-hosts.ts](lib/server/official-hosts.ts#L1) | 更新 `services` 的品牌別名、主網域、官方主機與來源。 |
 | TWNIC 通報網址比對 | [通報網址快照](data/通報TWNIC詐騙網址彙整表_20261008.json) · [比對程式](lib/server/reported-urls.ts) | 使用 2026-10-08 的本機資料。按完整主機、路徑、查詢參數和片段比對。 |
-| Widget 預覽回覆與通報入口 | [查證流程](lib/server/verification.ts) · [165 報案](lib/server/verification.ts#L16) · [數發部通報](components/chatbot/types.ts#L3) | 未啟用 AI 時使用固定建議。帳號查證命中可疑清單時顯示數發部通報按鈕，快速對話依 AI 建議顯示。 |
+| Widget 預覽回覆與通報入口 | [查證流程](lib/server/verification.ts) · [165 報案](lib/server/verification.ts#L18) · [數發部通報](components/chatbot/types.ts#L3) | 未啟用 AI 回覆時使用固定建議。連結、對話及帳號查證依結果顯示數發部通報按鈕，快速對話依 AI 建議顯示。 |
 
 ## AI 指令詞（Prompts）與 RAG
 
@@ -56,7 +56,7 @@ pnpm dev
 | --- | --- | --- |
 | 快速對話 ·「買演唱會票，對方說轉帳失敗，要我再付一次。」 | 顯示 AI 建議，有相關案例時附卡片。下方可繼續追問。 | 「先不要再匯款。從銀行 App 確認第一筆交易，並保留對話與付款紀錄。」 |
 | 快速對話 ·「對方傳來付款驗證網站，要求輸入簡訊驗證碼。」 | AI 若建議直接通報，會出現「前往數發部通報」。建議先查證時，可顯示連結或帳號查證按鈕。 | 「先停止操作、別輸入驗證碼。保留網址和對話截圖，通報這則可疑訊息。」 |
-| 連結查證 · `https://myship.payment-check.invalid/` | 規則判定「潛在風險」，說明品牌線索與主網域不符。 | 「請從平台官網或 App 核對訂單，先不要在這個連結輸入付款或驗證資料。」 |
+| 連結查證 · `https://myship.payment-check.invalid/` | 顯示「潛在風險」，說明品牌線索與主網域不符，底部提供數發部通報。 | 「請從平台官網或 App 核對訂單，先不要在這個連結輸入付款或驗證資料。」 |
 | 帳號查證 · `@giveme_money` | 命中顯示風險標題、已填的查詢人數與來源、狀態和數發部通報按鈕。「核實中」或「正在核實」顯示「潛在風險」。未命中顯示「目前查無此帳號的資料。」 | AI 說明保存於查證紀錄。 |
 | 對話評估 · 勾選賣家「你可以先付第二次嗎？」 | 依劇本規則顯示「極高風險」、可疑線索與數發部通報。相關案例直接顯示在結果底部，可橫向滑動。 | AI 補充文字保存在查證紀錄。Widget 結果頁顯示規則判定和案例卡。 |
 
@@ -64,12 +64,12 @@ pnpm dev
 
 | 想改什麼 | 目前做法與修改位置 |
 | --- | --- |
-| 回覆內容和語氣 | 用繁體中文簡短說明風險和下一步。有可疑線索時建議暫停交易並走官方管道。查無相關案例時直接提供查證結果與建議。AI 沿用規則判定，避免重複個資、帳號與網址。見 [查證回覆指令](lib/server/verification.ts#L186)。 |
-| 快速對話的追問和按鈕 | 將本輪文字、同場最近兩筆成功的問答和相關案例交給 AI。前文每筆最多取問題 300 字元、回覆 400 字元。指令讓模型依情境輸出 `[check:url]`、`[check:account]` 或 `[check:report]`，程式轉成固定按鈕。見 [前文查詢](app/api/widget/route.ts#L105)與[按鈕](components/chatbot/quick-chat.tsx#L39)。 |
-| 案例卡文字 | 儲存時把商品類別和原文交給 AI，輸出 `title`、`methodTags`、`cardSummary`。指令要求標題一行且 32 字以內、1 至 5 個手法標籤、卡片短摘要最多 60 字。見 [generateCaseMetadata](lib/server/openai.ts#L56)。 |
+| 回覆內容和語氣 | 用繁體中文簡短說明風險和下一步。有可疑線索時建議暫停交易並走官方管道。查無相關案例時直接提供查證結果與建議。AI 沿用規則判定，避免重複個資、帳號與網址。見 [查證回覆指令](lib/server/verification.ts#L220)。 |
+| 快速對話的追問和按鈕 | 將本輪文字、同場最近兩筆成功的問答和相關案例交給 AI。前文每筆最多取問題 300 字元、回覆 400 字元。指令讓模型依情境輸出 `[check:url]`、`[check:account]` 或 `[check:report]`，程式轉成固定按鈕。見 [前文查詢](app/api/widget/route.ts#L105)與[按鈕](components/chatbot/quick-chat.tsx#L60)。 |
+| 案例卡文字 | 儲存時把商品類別和原文交給 AI，輸出 `title`、`methodTags`、`cardSummary`。指令要求標題一行且 10 字以內、1 至 5 個手法標籤、卡片短摘要最多 30 字。見 [generateCaseMetadata](lib/server/openai.ts#L56)。 |
 | 模型與回覆長度 | 程式預設 `gpt-6-luna`，可用 `OPENAI_MODEL` 覆寫。請求上限是 600 個輸出 token，取得的文字再取前 600 字元。見 [環境變數範本](.env.example#L18)與 [generateExplanation](lib/server/openai.ts#L83)。 |
 
-Widget 同時設定 `DATABASE_URL` 和 `OPENAI_API_KEY` 才啟用 AI 與 RAG。未啟用時使用固定建議。AI 或案例檢索失敗時，已完成的規則判定仍可查看，快速對話會提示稍後重試。
+AI 回覆與 RAG 同時需要 `DATABASE_URL` 和 `OPENAI_API_KEY`。未啟用時使用固定建議。連結 AI 補查只需要 `OPENAI_API_KEY`，固定使用 `gpt-6-luna`。AI 或案例檢索失敗時，已完成的規則判定仍可查看，快速對話會提示稍後重試。
 
 ### RAG 怎麼挑案例
 
@@ -78,9 +78,9 @@ RAG 先從案例庫找相關案例，再把找到的資料交給 AI 參考。
 | 階段 | 目前做法 |
 | --- | --- |
 | 建立向量 | 建檔或修改商品類別、原文時，用標題、商品類別、手法標籤及**案例原文**建立向量。使用 `text-embedding-3-small` 的 1536 維向量，存入 Neon pgvector。短摘要用於卡片顯示。見 [向量輸入](lib/server/openai.ts#L42)與[案例儲存](lib/admin/data.ts#L109)。 |
-| Widget 搜尋 | 對話評估用選取的賣家原話，快速對話用本輪文字加上前兩筆成功的問題。勾選劇本對話或文字提到購票時，會用「門票」作商品線索。單獨做連結或帳號查證時，AI 說明根據規則結果，不會搜尋案例。見 [查證流程](lib/server/verification.ts#L137)。 |
+| Widget 搜尋 | 對話評估用選取的賣家原話，快速對話用本輪文字加上前兩筆成功的問題。勾選劇本對話或文字提到購票時，會用「門票」作商品線索。單獨做連結或帳號查證時，AI 說明根據判定結果，不會搜尋案例。見 [查證流程](lib/server/verification.ts#L171)。 |
 | 篩選與排名 | 只搜尋已收錄、有向量、來源為 HTTPS 的案例。相似度至少 `0.25`，且須達 `0.40` 或命中商品／手法線索。商品類別命中加 `0.15`，手法標籤出現在查詢文字加 `0.12`。依總分取最多三筆。見 [findCases](lib/server/retrieval.ts#L22)。 |
-| 回覆與卡片 | **快速對話和對話評估都會在每筆結果最下方直接顯示最多三張案例卡，可橫向滑動。** Threads 首頁門票串文使用同款卡片。AI 參考案例標題和**原文**，卡片顯示標題、短摘要，可點擊前往 165 打詐儀錶板。沒有符合條件的案例時，就不顯示卡片。見 [查證流程](lib/server/verification.ts#L184)與[共用案例卡](components/case-card.tsx)。 |
+| 回覆與卡片 | **快速對話和對話評估都會在每筆結果最下方直接顯示最多三張案例卡，可橫向滑動。** Threads 首頁門票串文使用同款卡片。AI 參考案例標題和**原文**，卡片顯示標題、短摘要，可點擊前往 165 打詐儀錶板。查無案例時省略整個案例區。見 [查證流程](lib/server/verification.ts#L205)與[共用案例卡](components/case-card.tsx)。 |
 | 首頁選卡 | 後台按「更新首頁案例卡」時，用第一篇門票串文的主題與正文搜尋，再按劇本版本保存選卡順序。首頁直接讀取已選案例的最新文案。見 [prepareHomepageCards](lib/server/retrieval.ts#L65)。 |
 
 ## 技術架構
@@ -100,7 +100,8 @@ RAG 先從案例庫找相關案例，再把找到的資料交給 AI 參考。
 
 - HTTPS 完整主機命中官方清單且使用預設連接埠時，結果大標顯示「已核對」，來源欄顯示服務名稱。接著比對 TWNIC 本機快照，命中顯示「曾被通報」。品牌線索符合但主網域不符時，顯示「潛在風險」並指出疑似仿冒。短網址只核對原始主機。
 - 無法確認的 HTTPS 主機會用 OpenAI Web Search 尋找 App Store 或 Google Play 的應用程式頁面，需要 `OPENAI_API_KEY`。只送完整主機名稱給搜尋。程式核對商店頁面上的開發者網站是否指向相同主機，再顯示查證來源。來源不足、搜尋失敗或尚未設定 API 時，顯示「無法確認」。
-- 帳號和網址狀態由規則決定。快速對話的數發部通報按鈕由 AI 建議觸發。165 入口則依既有風險規則顯示。
+- 連結結果的大標顯示判定，全址與主次網域放在黃色色塊，另有橘色來源和藍色狀態色塊。結果為「潛在風險」或「曾被通報」時，底部顯示風險提醒與「前往數發部通報」。見 [連結結果元件](components/chatbot/url-check-result.tsx)。
+- 對話評估為極高風險或帳號查證命中時，顯示數發部通報。快速對話依 AI 建議顯示數發部通報，其他符合報案規則的快速對話可顯示 165 報案。
 - 查證由 `POST /api/widget` 驗證輸入及寫入紀錄。伺服器用場次 ID 串起多輪，用場次 ID 和提交 ID 辨識重送。 [Widget API](app/api/widget/route.ts)
 
 ### 資料儲存
@@ -120,6 +121,6 @@ RAG 先從案例庫找相關案例，再把找到的資料交給 AI 參考。
 | --- | --- |
 | [app/](app/) | 首頁、聊天室、管理頁和 Widget API。 |
 | [components/](components/) | Threads 畫面、Widget、案例卡和後台元件。 |
-| [data/](data/) | 固定串文、聊天室劇本、預覽案例。 |
+| [data/](data/) | 固定串文、聊天室劇本、預覽案例及 TWNIC 通報網址快照。 |
 | [lib/server/](lib/server/) · [lib/admin/](lib/admin/) | 查證、RAG、OpenAI、資料庫與後台驗證。 |
 | [public/](public/) | 靜態素材。 |
