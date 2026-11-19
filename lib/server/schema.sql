@@ -27,6 +27,9 @@ ALTER TABLE suspicious_accounts
     ADD COLUMN IF NOT EXISTS lookup_count integer CHECK (lookup_count >= 0),
     ADD COLUMN IF NOT EXISTS source_url text;
 
+-- Remove the unused reason column from databases created with the old schema.
+ALTER TABLE public.suspicious_accounts DROP COLUMN IF EXISTS reason;
+
 CREATE TABLE IF NOT EXISTS widget_submissions (
     session_id text NOT NULL,
     submission_id text NOT NULL,

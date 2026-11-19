@@ -114,6 +114,7 @@ RAG 先從案例庫找相關案例，再把找到的資料交給 AI 參考。
 | `widget_submissions` | 各輪的輸入、選取訊息、劇本版本、分項結果、AI 回覆與引用案例。 |
 
 - 管理員登入後可維護資料，受測者可直接使用 Demo。查證提交紀錄沒有自動到期。開啟 Widget、取消勾選等操作不另存事件。 [Neon schema](lib/server/schema.sql)
+- 舊可疑帳號表若仍有 `reason`，在 Neon SQL Editor 執行 [清理 SQL](lib/server/migrations/simplify-suspicious-accounts.sql)，移除此欄位及其中的舊資料。目前帳號表使用 `id`、`case_status`、`lookup_count`、`source_url` 和 `updated_at`。
 
 ### 資料夾索引
 
