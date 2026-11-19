@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { motion, useReducedMotion } from "motion/react";
 import type { Ref } from "react";
 
 import { CaseCarousel } from "@/components/case-card";
@@ -31,6 +32,8 @@ export function QuickChatHistory({ turns, pending, transcriptRef, onCheck }: {
   transcriptRef: Ref<HTMLDivElement>;
   onCheck: (kind: SuggestedCheck) => void;
 }) {
+  const reducedMotion = useReducedMotion();
+
   return (
     <div className="relative flex min-h-0 flex-1 overflow-hidden rounded-widget border border-input">
       <div
@@ -53,8 +56,13 @@ export function QuickChatHistory({ turns, pending, transcriptRef, onCheck }: {
             {input.text && (
               <p className="ml-auto w-fit max-w-[85%] rounded-widget bg-muted px-3 py-2 text-widget-body wrap-anywhere whitespace-pre-wrap">{input.text}</p>
             )}
-            <div className="flex items-start gap-2">
-              <Image src="/pictures/ui/customer_service_avatar.png" alt="客服" width={32} height={32} unoptimized className="size-8 shrink-0 object-contain" />
+            <motion.div
+              className="flex items-start gap-2"
+              initial={reducedMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: reducedMotion ? 0 : 0.2 }}
+            >
+              <Image src="/pictures/ui/customer_service_avatar.png" alt="客服" width={32} height={32} loading="eager" unoptimized className="size-8 shrink-0 object-contain" />
               <div className="min-w-0 flex-1 space-y-2">
                 <CheckGuidance response={response} inChat />
                 {!!response.suggestedActions?.length && (
@@ -72,7 +80,7 @@ export function QuickChatHistory({ turns, pending, transcriptRef, onCheck }: {
                 )}
                 <CaseCarousel cases={response.cases} />
               </div>
-            </div>
+            </motion.div>
           </article>
         ))}
       </div>

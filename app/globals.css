@@ -208,16 +208,16 @@
   }
 
   .btn {
-    @apply inline-flex items-center justify-center rounded-widget px-4 py-2 font-normal transition-colors duration-300 border border-black disabled:pointer-events-none disabled:opacity-50 cursor-pointer;
+    @apply inline-flex items-center justify-center rounded-widget px-4 py-2 font-normal transition-colors duration-300 active:duration-0 border border-black disabled:pointer-events-none disabled:opacity-50 cursor-pointer;
   }
 
   /* yellow */
   .btn-yellow {
-    @apply bg-yellow text-black hover:bg-yellow3;
+    @apply bg-yellow text-black hover:bg-yellow3 active:bg-yellow3;
   }
 
   /* black */
   .btn-black {
-    @apply bg-black text-white hover:bg-black3;
+    @apply bg-black text-white hover:bg-black3 active:bg-black3;
   }
 }

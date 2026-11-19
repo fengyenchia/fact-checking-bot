@@ -12,7 +12,10 @@ async function HomepageFeed() {
     try {
       cases = await getHomepageCards();
     } catch (error) {
-      console.error("Unable to load homepage cases", error instanceof Error ? error.name : "UnknownError");
+      console.error(
+        "Unable to load homepage cases",
+        error instanceof Error ? error.name : "UnknownError",
+      );
       cases = [];
     }
   }

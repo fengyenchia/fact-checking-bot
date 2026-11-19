@@ -16,6 +16,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
+import { preload } from "react-dom";
 
 import { parseWidgetUrl } from "@/lib/widget-url";
 import { AccountCheckResult } from "./account-check-result";
@@ -120,6 +121,16 @@ export function ChatbotWidget({
   const showingDetailResult = Boolean(detailResult);
 
   useEffect(() => {
+    const images = [
+      "/pictures/covers/home.png",
+      ...Object.values(checkImageUrls),
+      "/pictures/ui/loading.png",
+      "/pictures/ui/customer_service_avatar.png",
+    ];
+    for (const src of images) preload(src, { as: "image" });
+  }, []);
+
+  useEffect(() => {
     try {
       sessionStorage.setItem(
         `threads-checks:${sessionId}`,
@@ -214,8 +225,8 @@ export function ChatbotWidget({
       alt=""
       width={220}
       height={220}
-      loading={showCheckSpinner || activeKind === "dialogue" ? "eager" : undefined}
-      unoptimized={showCheckSpinner || activeKind === "dialogue"}
+      loading="eager"
+      unoptimized
       className={`mx-auto ${coverSpacing} ${showCheckSpinner ? "motion-safe:animate-spin motion-safe:[animation-duration:1.8s]" : ""}`}
     />
   );
@@ -368,7 +379,7 @@ export function ChatbotWidget({
         <Dialog.Trigger
           ref={triggerRef}
           hidden={dialogueSelecting}
-          className={`${floatingPosition} inline-flex min-h-12 cursor-pointer items-center gap-1.5 rounded-widget border border-border bg-background px-3.5 text-sm font-semibold text-foreground shadow-md transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&[hidden]]:hidden`}
+          className={`${floatingPosition} btn-yellow inline-flex min-h-12 cursor-pointer items-center gap-1.5 rounded-widget border border-border px-3.5 text-sm font-semibold shadow-md transition-colors active:duration-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&[hidden]]:hidden`}
         >
           <IconShieldCheck aria-hidden size={18} stroke={1.9} />
           查證
@@ -393,160 +404,175 @@ export function ChatbotWidget({
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.17, ease: "easeOut" }}
             >
-              <header
-                className={showingDetailResult ? "sr-only" : "shrink-0 px-3 pt-12 text-center sm:px-5 sm:pt-7"}
+              <motion.div
+                key={activeKind ?? (showInstructions ? "guide" : "menu")}
+                className="flex min-h-0 flex-1 flex-col"
+                initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: reducedMotion ? 0 : 0.15, ease: "easeOut" }}
               >
-                <Dialog.Title
-                  ref={headingRef}
-                  tabIndex={-1}
-                  className="text-widget-title outline-none"
+                <header
+                  className={showingDetailResult ? "sr-only" : "shrink-0 px-3 pt-12 text-center sm:px-5 sm:pt-7"}
                 >
-                  {activeKind ? `${checkLabels[activeKind]}${showingDetailResult ? "結果" : ""}` : "「這是詐騙嗎？」"}
-                </Dialog.Title>
-                {!showingDetailResult && !showingChatHistory && !showCheckIntro && coverImage}
-              </header>
-              {detailResult ? (
-                <div ref={transcript} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-                  {activeKind === "account" && <AccountCheckResult turn={detailResult} />}
-                  {activeKind === "dialogue" && <DialogueCheckResult turn={detailResult} />}
-                  {activeKind === "url" && <UrlCheckResult turn={detailResult} />}
-                </div>
-              ) : activeKind === "dialogue" ? (
-                <div className={`${checkBody} ${checkIntroSpacing} items-center px-5`}>
-                  {coverImage}
-                  <div className="shrink-0 space-y-3 text-center">
-                    {pending ? (
-                      <p role="status" className="text-widget-body">努力讀取中…敬請稍候</p>
-                    ) : (
-                      <>
-                        {error && <p role="alert" className="text-widget-note text-orange">{error}</p>}
-                        <button type="button" className={`btn btn-yellow min-h-11 ${actionFocus}`} onClick={beginDialogueSelection}>重新選取對話</button>
-                      </>
-                    )}
+                  <Dialog.Title
+                    ref={headingRef}
+                    tabIndex={-1}
+                    className="text-widget-title outline-none"
+                  >
+                    {activeKind ? `${checkLabels[activeKind]}${showingDetailResult ? "結果" : ""}` : "「這是詐騙嗎？」"}
+                  </Dialog.Title>
+                  {!showingDetailResult && !showingChatHistory && !showCheckIntro && coverImage}
+                </header>
+                {detailResult ? (
+                  <motion.div
+                    key={detailResult.submissionId}
+                    ref={transcript}
+                    className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+                    initial={reducedMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: reducedMotion ? 0 : 0.2 }}
+                  >
+                    {activeKind === "account" && <AccountCheckResult turn={detailResult} />}
+                    {activeKind === "dialogue" && <DialogueCheckResult turn={detailResult} />}
+                    {activeKind === "url" && <UrlCheckResult turn={detailResult} />}
+                  </motion.div>
+                ) : activeKind === "dialogue" ? (
+                  <div className={`${checkBody} ${checkIntroSpacing} items-center px-5`}>
+                    {coverImage}
+                    <div className="shrink-0 space-y-3 text-center">
+                      {pending ? (
+                        <p role="status" className="text-widget-body">努力讀取中…敬請稍候</p>
+                      ) : (
+                        <>
+                          {error && <p role="alert" className="text-widget-note text-orange">{error}</p>}
+                          <button type="button" className={`btn btn-yellow min-h-11 ${actionFocus}`} onClick={beginDialogueSelection}>重新選取對話</button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ) : showingChatHistory ? (
-                <div className="mx-auto flex min-h-0 w-full max-w-96 flex-1 flex-col gap-3 px-5 pt-5">
-                  <QuickChatHistory
-                    turns={activeTurns}
-                    pending={pending}
-                    transcriptRef={transcript}
-                    onCheck={(kind) => {
-                      setDetailResultId(null);
-                      setActiveKind(kind);
-                    }}
-                  />
-                  <form
-                    className="shrink-0 space-y-2"
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      void submit("chat");
-                    }}
-                  >
-                    {error && <p role="alert" className="text-widget-note text-orange">{error}</p>}
-                    <CheckInput kind="chat" input={drafts.chat} pending={pending} compact onChange={setText} />
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        type="button"
-                        className={`btn btn-black min-h-11 ${actionFocus}`}
-                        disabled={pending || (!hasInput && !error)}
-                        onClick={() => {
-                          resetInput("chat");
-                          setErrors((current) => ({ ...current, chat: undefined }));
-                        }}
-                      >
-                        重新輸入
-                      </button>
-                      <button type="submit" disabled={pendingKind !== null || !hasInput} className={`btn btn-yellow min-h-11 ${actionFocus}`}>
-                        確定送出
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              ) : activeKind ? (
-                <div
-                  ref={transcript}
-                  tabIndex={activeKind === "chat" ? 0 : undefined}
-                  role={activeKind === "chat" ? "region" : undefined}
-                  aria-label={activeKind === "chat" ? "快速對話內容" : undefined}
-                  className={`${checkBody} ${showCheckIntro ? checkIntroSpacing : ""} ${activeKind === "chat" ? "scrollbar-none" : ""}`}
-                >
-                  {showChatIntro ? (
-                    <div className="my-auto flex shrink-0 flex-col gap-5 px-5">
-                      {coverImage}
-                      <p className="shrink-0 text-center text-widget-body whitespace-pre-line">{checkPrompts.chat}</p>
-                    </div>
-                  ) : showCheckIntro && coverImage}
-                  <form
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      void submit(activeKind);
-                    }}
-                    className="mx-auto w-full max-w-96 shrink-0 space-y-3 px-5"
-                  >
-                    {!showChatIntro && (
-                      <p role={showCheckSpinner ? "status" : undefined} className="text-center text-widget-body whitespace-pre-line">
-                        {showCheckSpinner ? "努力查證中…敬請稍候" : checkPrompts[activeKind]}
-                      </p>
-                    )}
-                    {error && (
-                      <p role="alert" className="text-widget-note text-orange">
-                        {error}
-                      </p>
-                    )}
-                    <CheckInput
-                      kind={activeKind}
-                      input={drafts[activeKind]}
+                ) : showingChatHistory ? (
+                  <div className="mx-auto flex min-h-0 w-full max-w-96 flex-1 flex-col gap-3 px-5 pt-5">
+                    <QuickChatHistory
+                      turns={activeTurns}
                       pending={pending}
-                      urlErrorId={activeKind === "url" && invalidUrl ? urlErrorId : undefined}
-                      onChange={(value) => {
-                        if (activeKind === "url") setInvalidUrl(false);
-                        setters[activeKind](value);
+                      transcriptRef={transcript}
+                      onCheck={(kind) => {
+                        setDetailResultId(null);
+                        setActiveKind(kind);
                       }}
                     />
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        type="button"
-                        className={`btn btn-black min-h-11 ${actionFocus} ${accountLoadingButtonStyle}`}
-                        onClick={() => {
-                          resetInput(activeKind);
+                    <form
+                      className="shrink-0 space-y-2"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        void submit("chat");
+                      }}
+                    >
+                      {error && <p role="alert" className="text-widget-note text-orange">{error}</p>}
+                      <CheckInput kind="chat" input={drafts.chat} pending={pending} compact onChange={setText} />
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          className={`btn btn-black min-h-11 ${actionFocus}`}
+                          disabled={pending || (!hasInput && !error)}
+                          onClick={() => {
+                            resetInput("chat");
+                            setErrors((current) => ({ ...current, chat: undefined }));
+                          }}
+                        >
+                          重新輸入
+                        </button>
+                        <button type="submit" disabled={pendingKind !== null || !hasInput} className={`btn btn-yellow min-h-11 ${actionFocus}`}>
+                          確定送出
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                ) : activeKind ? (
+                  <div
+                    ref={transcript}
+                    tabIndex={activeKind === "chat" ? 0 : undefined}
+                    role={activeKind === "chat" ? "region" : undefined}
+                    aria-label={activeKind === "chat" ? "快速對話內容" : undefined}
+                    className={`${checkBody} ${showCheckIntro ? checkIntroSpacing : ""} ${activeKind === "chat" ? "scrollbar-none" : ""}`}
+                  >
+                    {showChatIntro ? (
+                      <div className="my-auto flex shrink-0 flex-col gap-5 px-5">
+                        {coverImage}
+                        <p className="shrink-0 text-center text-widget-body whitespace-pre-line">{checkPrompts.chat}</p>
+                      </div>
+                    ) : showCheckIntro && coverImage}
+                    <form
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        void submit(activeKind);
+                      }}
+                      className="mx-auto w-full max-w-96 shrink-0 space-y-3 px-5"
+                    >
+                      {!showChatIntro && (
+                        <p role={showCheckSpinner ? "status" : undefined} className="text-center text-widget-body whitespace-pre-line">
+                          {showCheckSpinner ? "努力查證中…敬請稍候" : checkPrompts[activeKind]}
+                        </p>
+                      )}
+                      {error && (
+                        <p role="alert" className="text-widget-note text-orange">
+                          {error}
+                        </p>
+                      )}
+                      <CheckInput
+                        kind={activeKind}
+                        input={drafts[activeKind]}
+                        pending={pending}
+                        urlErrorId={activeKind === "url" && invalidUrl ? urlErrorId : undefined}
+                        onChange={(value) => {
                           if (activeKind === "url") setInvalidUrl(false);
-                          setErrors((current) => ({
-                            ...current,
-                            [activeKind]: undefined,
-                          }));
+                          setters[activeKind](value);
                         }}
-                        disabled={pending || (!hasInput && !error)}
-                      >
-                        重新輸入
-                      </button>
-                      <button
-                        type="submit"
-                        className={`btn btn-yellow min-h-11 ${actionFocus} ${accountLoadingButtonStyle}`}
-                        disabled={pendingKind !== null || !hasInput}
-                      >
-                        確定送出
-                      </button>
-                    </div>
-                    {activeKind === "url" && invalidUrl && (
-                      <p id={urlErrorId} role="alert" className="text-widget-note text-orange">
-                        連結無效，請重新輸入！
-                      </p>
+                      />
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          className={`btn btn-black min-h-11 ${actionFocus} ${accountLoadingButtonStyle}`}
+                          onClick={() => {
+                            resetInput(activeKind);
+                            if (activeKind === "url") setInvalidUrl(false);
+                            setErrors((current) => ({
+                              ...current,
+                              [activeKind]: undefined,
+                            }));
+                          }}
+                          disabled={pending || (!hasInput && !error)}
+                        >
+                          重新輸入
+                        </button>
+                        <button
+                          type="submit"
+                          className={`btn btn-yellow min-h-11 ${actionFocus} ${accountLoadingButtonStyle}`}
+                          disabled={pendingKind !== null || !hasInput}
+                        >
+                          確定送出
+                        </button>
+                      </div>
+                      {activeKind === "url" && invalidUrl && (
+                        <p id={urlErrorId} role="alert" className="text-widget-note text-orange">
+                          連結無效，請重新輸入！
+                        </p>
+                      )}
+                    </form>
+                  </div>
+                ) : (
+                  <div key={showInstructions ? "guide" : "menu"} className="flex min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                    {showInstructions ? (
+                      <CheckGuide onHome={() => setShowInstructions(false)} />
+                    ) : (
+                      <CheckMenu onHelp={() => setShowInstructions(true)} onSelect={(kind) => {
+                        if (kind === "dialogue" && pendingKind !== "dialogue") beginDialogueSelection();
+                        else setActiveKind(kind);
+                      }} />
                     )}
-                  </form>
-                </div>
-              ) : (
-                <div key={showInstructions ? "guide" : "menu"} className="flex min-h-0 flex-1 overflow-y-auto overscroll-contain">
-                  {showInstructions ? (
-                    <CheckGuide onHome={() => setShowInstructions(false)} />
-                  ) : (
-                    <CheckMenu onHelp={() => setShowInstructions(true)} onSelect={(kind) => {
-                      if (kind === "dialogue" && pendingKind !== "dialogue") beginDialogueSelection();
-                      else setActiveKind(kind);
-                    }} />
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </motion.div>
               <footer className="flex shrink-0 justify-end px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                 {activeKind ? (
                   <button

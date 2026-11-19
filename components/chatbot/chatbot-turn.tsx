@@ -51,7 +51,7 @@ export function CheckGuidance({ response, showReportLink = true, inChat = false 
             href={response.reportUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex min-h-11 items-center gap-1 rounded-widget border border-border px-3.5 text-widget-subtitle font-semibold hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
+            className="inline-flex min-h-11 items-center gap-1 rounded-widget border border-border px-3.5 text-widget-subtitle font-semibold hover:bg-muted active:bg-muted focus-visible:outline-2 focus-visible:outline-ring"
           >
             前往 165 報案
             <IconArrowUpRight className="size-4" aria-hidden />

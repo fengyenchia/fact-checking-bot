@@ -8,7 +8,7 @@ const actionFocus =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 const fieldStyle =
   "w-full rounded-widget border border-input bg-background px-4 py-2.5 text-widget-body placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring";
-const menuLink = `mx-auto flex w-fit cursor-pointer items-center gap-1 rounded-widget text-widget-note underline underline-offset-4 ${actionFocus}`;
+const menuLink = `mx-auto flex w-fit cursor-pointer items-center gap-1 rounded-widget text-widget-note underline underline-offset-4 active:bg-yellow3 active:text-black ${actionFocus}`;
 
 export function CheckMenu({
   onSelect,
