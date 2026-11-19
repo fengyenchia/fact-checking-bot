@@ -40,7 +40,7 @@ pnpm dev
 | 首頁其他串文 | [data/posts.ts](data/posts.ts#L21) | 在 `posts` 增修一般串文的帳號、正文、時間與互動數。 |
 | 賣家帳號與聊天室劇本 | [data/scenarios/ticket.ts](data/scenarios/ticket.ts#L1) | 改 `ticketSellerName`、`ticketSellerId`、預填回覆 `ticketReply`、訊息間隔 `messageIntervalMs`，以及 `openingMessages`、`followUpMessages` 的台詞與示例網址。聊天室路徑跟著賣家 ID 更新，後台測試帳號須同步調整。 |
 | 本機預覽案例卡 | [data/preview-cases.ts](data/preview-cases.ts#L7) | 改 `previewCases` 的標題、短摘要與來源。首頁未連 Neon 時使用這組卡。 |
-| 官方案例與首頁選卡 | 後台 `/admin/cases` | 編輯商品類別、案例原文、發布日期、縣市和來源。要重選首頁案例時按「更新首頁案例卡」。 |
+| 官方案例與首頁選卡 | 後台 `/admin/cases` | 顯示案例總筆數，並可編輯商品類別、案例原文、發布日期、縣市和來源。在 Neon 直接修改資料後，按「重新讀取案例」載入最新清單。要重選首頁案例時按「更新首頁案例卡」。 |
 | 可疑 Threads 帳號 | 後台 `/admin/accounts` | 維護帳號 ID、案件狀態、查詢人數和資料連結。 |
 | 網址查證的官方主機 | [lib/server/official-hosts.ts](lib/server/official-hosts.ts#L1) | 更新 `services` 的品牌別名、主網域、官方主機與來源。 |
 | TWNIC 通報網址比對 | [通報網址快照](data/通報TWNIC詐騙網址彙整表_20261008.json) · [比對程式](lib/server/reported-urls.ts) | 使用 2026-10-08 的本機資料。按解析後的完整主機、連接埠、路徑、查詢參數和片段比對。 |

@@ -345,12 +345,7 @@ export function ChatbotWidget({
   return (
     <>
       {dialogueSelecting && (
-        <section aria-labelledby="dialogue-selection-title" className="widget-font relative z-40 w-full max-w-sm shrink-0 self-center rounded-t-widget border border-border bg-background px-4 pt-3 pb-4 text-center shadow-lg">
-          {selectedMessages.length > 0 && (
-            <p role="status" className="mx-auto mb-2 w-fit rounded-widget bg-yellow3 px-3 py-1 text-sm text-black">
-              已選取 {selectedMessages.length} 則對話
-            </p>
-          )}
+        <section aria-labelledby="dialogue-selection-title" className="widget-font relative z-40 w-full max-w-sm shrink-0 self-center rounded-widget border border-border bg-background px-4 pt-3 pb-4 text-center shadow-lg">
           <h2 id="dialogue-selection-title" ref={selectionHeading} tabIndex={-1} className="text-widget-title mb-2 outline-none">對話評估</h2>
           <div className="grid grid-cols-2 gap-2">
             <button
@@ -399,7 +394,7 @@ export function ChatbotWidget({
             className="widget-font fixed inset-x-0 bottom-[var(--widget-viewport-bottom)] z-50 flex h-[min(42rem,86dvh,var(--widget-viewport-height))] flex-col [container-type:size] outline-none sm:inset-x-auto sm:right-4 sm:bottom-[max(var(--widget-viewport-bottom),calc(11rem+env(safe-area-inset-bottom)))] sm:h-[min(39rem,calc(100dvh-12rem),var(--widget-viewport-height))] sm:w-105"
           >
             <motion.div
-              className="flex h-full min-h-0 flex-col overflow-hidden rounded-t-widget border border-border bg-background text-foreground shadow-xl sm:rounded-widget"
+              className="flex h-full min-h-0 flex-col overflow-hidden rounded-widget border border-border bg-background text-foreground shadow-xl"
               initial={reducedMotion ? false : { y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.17, ease: "easeOut" }}

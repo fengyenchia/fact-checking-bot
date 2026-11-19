@@ -35,6 +35,12 @@ export async function saveAccount(id: string | null, _previous: AdminFormState, 
   redirect("/admin/accounts")
 }
 
+export async function refreshCases(): Promise<AdminFormState> {
+  await requireAdmin()
+  revalidatePath("/admin/cases")
+  return {}
+}
+
 export async function regenerateHomepage(): Promise<AdminFormState> {
   await requireAdmin()
   if (!process.env.DATABASE_URL || !process.env.OPENAI_API_KEY) {

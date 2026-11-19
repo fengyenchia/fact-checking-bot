@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>查證流程｜畫面與檔案對照</title>
+  <link rel="stylesheet" href="map.css">
+</head>
+<body>
+<nav aria-label="畫面對照圖"><a href="index.html">索引</a> <a href="usage-guide.html">使用說明</a> <a href="check-home.html">查證首頁</a> <a href="check-flow.html" aria-current="page">查證流程</a> <a href="threads-and-chat.html">貼文與聊天</a></nav>
+<main>
+  <h1>查證流程</h1>
+  <p class="caption">輸入、載入、查證結果與伺服器判定</p>
+  <div class="map-head" aria-hidden="true"><span>畫面區塊</span><span>修改位置</span></div>
+  <div class="map">
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="輸入框與提示字">輸入連結…</button>
+    <div class="source-note"><strong>輸入框與提示字</strong><code>components/chatbot/check-inputs.tsx:80</code><p>找 CheckInput。快速對話輸入框的高度也在這裡設定。連結格式判定在 lib/widget-url.ts 的 parseWidgetUrl。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="四種功能的插圖版面">標題　→　插圖　→　說明</button>
+    <div class="source-note"><strong>四種功能的插圖版面</strong><code>components/chatbot/chatbot-widget.tsx:54</code><p>共用間距在 checkIntroSpacing。快速對話輸入長文時，插圖和提示會往上捲，往回捲可以再看到。輸入框最高高度在 CheckInput。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="送出與載入畫面">努力查證中…</button>
+    <div class="source-note"><strong>送出與載入畫面</strong><code>components/chatbot/chatbot-widget.tsx:212</code><p>帳號、連結查證共用 showCheckSpinner 與 public/pictures/ui/loading.png。對話評估使用 dialogue.png。提交邏輯找 submit。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="連結結果版面">潛在風險</button>
+    <div class="source-note"><strong>連結結果版面</strong><code>components/chatbot/url-check-result.tsx:13</code><p>修改結論大標、完整主機與主次網域、來源與狀態色塊，以及底部的風險通報區。查證順序在 lib/server/verification.ts 的 checkUrl。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="對話評估結果版面">極高風險／風險重點</button>
+    <div class="source-note"><strong>對話評估結果版面</strong><code>components/chatbot/dialogue-check-result.tsx:5</code><p>調整結果標題、風險條列、通報和案例區。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="帳號查證回覆">帳號查證</button>
+    <div class="source-note"><strong>帳號查證回覆</strong><code>components/chatbot/account-check-result.tsx:23</code><p>修改風險標題、查詢人數、來源、狀態與通報按鈕。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="快速對話載入與回覆">快速對話載入與回覆</button>
+    <div class="source-note"><strong>快速對話載入與回覆</strong><code>components/chatbot/quick-chat.tsx:12</code><p>找 QuickChatLoading 和 QuickChatHistory。這裡設定模糊載入層、紀錄的垂直捲軸、操作按鈕及案例卡位置。客服頭貼在 public/pictures/ui/customer_service_avatar.png。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="切頁與結果動畫">切頁淡入上移 → 結果淡入</button>
+    <div class="source-note"><strong>切頁與結果動畫</strong><code>components/chatbot/chatbot-widget.tsx:407</code><p>功能頁使用 0.15 秒淡入與上移 6 px，查證結果使用 0.2 秒整區淡入。快速對話每筆回覆的淡入在 quick-chat.tsx，動畫配合減少動態效果設定。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="伺服器邏輯">查證判定 → 回傳結果</button>
+    <div class="source-note"><strong>伺服器邏輯</strong><code>lib/server/verification.ts:171</code><p>找 processSubmission 修改查證流程或 AI 說明。請求入口在 app/api/widget/route.ts，連結 AI 補查在 lib/server/official-site-search.ts。</p></div>
+  </div>
+</main>
+<script>
+  const map = document.querySelector('.map');
+  map.addEventListener('click', (event) => {
+    const selected = event.target.closest('button.screen-piece');
+    if (!selected) return;
+    for (const button of map.querySelectorAll('button.screen-piece')) {
+      button.setAttribute('aria-pressed', String(button === selected));
+      button.nextElementSibling.classList.toggle('is-selected', button === selected);
+    }
+  });
+</script>
+</body>
+</html>

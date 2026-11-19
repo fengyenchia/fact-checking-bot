@@ -1,0 +1,52 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, "Microsoft JhengHei", sans-serif;
+  --surface: light-dark(#f4f3f0, #21211f);
+  --selected: light-dark(#fff1b9, #4c3d15);
+  --border: light-dark(#d1ccc2, #514c43);
+  --muted: light-dark(#57534e, #ccc5ba);
+}
+
+body { max-width: 54rem; margin: 2rem auto; padding: 0 1rem; }
+nav { display: flex; flex-wrap: wrap; gap: .5rem 1rem; }
+nav a, .index-links a { color: inherit; text-underline-offset: .25em; }
+nav a[aria-current] { font-weight: 700; }
+h1 { margin-block: 1.5rem .5rem; }
+.caption { color: var(--muted); margin-block: 0 1rem; }
+.map, .map-head { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+.map-head { color: var(--muted); margin-block: 1rem .35rem; }
+.screen-piece {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-width: 0;
+  padding: .65rem;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  background: var(--surface);
+  border: 0;
+  cursor: pointer;
+}
+.screen-piece:first-child { border-radius: 20px 20px 0 0; }
+.screen-piece:nth-last-child(2) { border-radius: 0 0 20px 20px; }
+.screen-piece[aria-pressed="true"], .source-note.is-selected { background: var(--selected); }
+.screen-piece:focus-visible { outline-offset: -3px; }
+.source-note { position: relative; min-width: 0; align-content: center; padding: .6rem .5rem .6rem 1.75rem; }
+.source-note::before { position: absolute; inset-inline-start: .45rem; top: 50%; transform: translateY(-50%); content: "→"; }
+.source-note code { display: block; overflow-wrap: anywhere; margin-block: .25rem; }
+.source-note p { margin: 0; font-size: .9rem; color: var(--muted); }
+.preview-art { width: min(100%, 9rem); height: auto; }
+.preview-title { font-weight: 700; }
+.preview-action { text-decoration: underline; text-underline-offset: .2em; }
+.preview-card { display: grid; gap: .25rem; border: 1px solid var(--border); border-radius: 20px; padding: .65rem; text-align: start; }
+.preview-pills { display: grid; gap: .25rem; }
+.preview-pills span { background: var(--selected); border-radius: 20px; padding: .2rem .65rem; }
+.text-small { font-size: .85rem; }
+.index-links { padding-inline-start: 1.5rem; }
+.index-links li { margin-block: .75rem; }
+
+@media (max-width: 480px) {
+  .source-note { padding-inline-start: 1.25rem; }
+  .source-note::before { inset-inline-start: .15rem; }
+}

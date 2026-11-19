@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>貼文與聊天｜畫面與檔案對照</title>
+  <link rel="stylesheet" href="map.css">
+</head>
+<body>
+<nav aria-label="畫面對照圖"><a href="index.html">索引</a> <a href="usage-guide.html">使用說明</a> <a href="check-home.html">查證首頁</a> <a href="check-flow.html">查證流程</a> <a href="threads-and-chat.html" aria-current="page">貼文與聊天</a></nav>
+<main>
+  <h1>貼文與聊天</h1>
+  <p class="caption">首頁貼文、案例卡、聊天室與選取模式</p>
+  <div class="map-head" aria-hidden="true"><span>畫面區塊</span><span>修改位置</span></div>
+  <div class="map">
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="貼文排版與貼文內容">首頁貼文</button>
+    <div class="source-note"><strong>貼文排版與貼文內容</strong><code>components/threads/feed.tsx:9</code><p>作者、貼文文字與互動數字在 data/posts.ts。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="案例卡版面">相關案例</button>
+    <div class="source-note"><strong>案例卡版面</strong><code>components/case-card.tsx:24</code><p>首頁、對話評估與快速對話共用橫向案例卡。案例查詢與選卡在 lib/server/retrieval.ts。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="帳號名與對話劇本">是詐騙ㄛ ｜ @giveme_money</button>
+    <div class="source-note"><strong>帳號名與對話劇本</strong><code>data/scenarios/ticket.ts:2</code><p>修改顯示名稱、帳號、訊息內容與出現間隔。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="聊天室、遮罩與勾選提示">點選以選取對話</button>
+    <div class="source-note"><strong>聊天室、遮罩與勾選提示</strong><code>components/threads/conversation.tsx:136</code><p>對話泡泡和勾選圈在 conversation-message.tsx。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="勾選模式的底部面板">取消 ｜ 確定送出</button>
+    <div class="source-note"><strong>勾選模式的底部面板</strong><code>components/chatbot/chatbot-widget.tsx:348</code><p>找 dialogueSelecting 條件下的面板，可改對話評估標題、取消與確定送出按鈕。</p></div>
+  </div>
+</main>
+<script>
+  const map = document.querySelector('.map');
+  map.addEventListener('click', (event) => {
+    const selected = event.target.closest('button.screen-piece');
+    if (!selected) return;
+    for (const button of map.querySelectorAll('button.screen-piece')) {
+      button.setAttribute('aria-pressed', String(button === selected));
+      button.nextElementSibling.classList.toggle('is-selected', button === selected);
+    }
+  });
+</script>
+</body>
+</html>

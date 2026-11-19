@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>使用說明｜畫面與檔案對照</title>
+  <link rel="stylesheet" href="map.css">
+</head>
+<body>
+<nav aria-label="畫面對照圖"><a href="index.html">索引</a> <a href="usage-guide.html" aria-current="page">使用說明</a> <a href="check-home.html">查證首頁</a> <a href="check-flow.html">查證流程</a> <a href="threads-and-chat.html">貼文與聊天</a></nav>
+<main>
+  <h1>使用說明</h1>
+  <p class="caption">標題、封面、說明卡、回首頁和關閉按鈕</p>
+  <div class="map-head" aria-hidden="true"><span>畫面區塊</span><span>修改位置</span></div>
+  <div class="map">
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="Widget 標題"><span class="preview-title">「這是詐騙嗎？」</span></button>
+    <div class="source-note"><strong>Widget 標題</strong><code>components/chatbot/chatbot-widget.tsx:417</code><p>找 Dialog.Title 改標題文字。字級與粗體在 app/globals.css 的 .text-widget-title。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="首頁與說明頁的封面"><img class="preview-art" alt="Widget 首頁封面" src="../../public/pictures/covers/home.png"></button>
+    <div class="source-note"><strong>首頁與說明頁的封面</strong><code>public/pictures/covers/home.png</code><p>換封面就替換這張圖；顯示尺寸在 chatbot-widget.tsx 的 Image。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="說明卡標題、內文與四項條列"><span class="preview-card"><strong>我是快速查核小工具！</strong><span class="text-small">透過四種簡易方式，快速辨認社群詐騙並通報。</span><span class="text-small">・連結查證<br>・對話評估<br>・帳號查證<br>・快速對話</span></span></button>
+    <div class="source-note"><strong>說明卡標題、內文與四項條列</strong><code>components/chatbot/check-inputs.tsx:47</code><p>找 CheckGuide。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="回首頁的位置與文字"><span class="preview-action">⌂ 回首頁</span></button>
+    <div class="source-note"><strong>回首頁的位置與文字</strong><code>components/chatbot/check-inputs.tsx:74</code><p>按鈕緊接在說明卡下方。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="右下關閉按鈕">×</button>
+    <div class="source-note"><strong>右下關閉按鈕</strong><code>components/chatbot/chatbot-widget.tsx:590</code><p>找 Dialog.Close。</p></div>
+  </div>
+</main>
+<script>
+  const map = document.querySelector('.map');
+  map.addEventListener('click', (event) => {
+    const selected = event.target.closest('button.screen-piece');
+    if (!selected) return;
+    for (const button of map.querySelectorAll('button.screen-piece')) {
+      button.setAttribute('aria-pressed', String(button === selected));
+      button.nextElementSibling.classList.toggle('is-selected', button === selected);
+    }
+  });
+</script>
+</body>
+</html>

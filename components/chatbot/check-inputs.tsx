@@ -22,7 +22,7 @@ export function CheckMenu({
       <p className="text-widget-body">
         別慌別慌！
         <br />
-        讓我們快速開始...
+        野原星之助來了☆ミ
       </p>
       <div className="grid gap-2.5">
         {checkOrder.map((kind) => (
@@ -53,7 +53,7 @@ export function CheckGuide({ onHome }: { onHome: () => void }) {
       >
         <h2 id="widget-guide-title" className="text-widget-body font-semibold">
           <span className="bg-linear-to-t from-yellow3 from-40% to-transparent to-40%">
-            我是快速查核小工具！
+            我是野原星之助！
           </span>
         </h2>
         <p className="text-widget-body">

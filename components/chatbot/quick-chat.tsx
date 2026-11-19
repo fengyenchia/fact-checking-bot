@@ -5,13 +5,22 @@ import type { Ref } from "react";
 import { CaseCarousel } from "@/components/case-card";
 
 import { CheckGuidance } from "./chatbot-turn";
-import { checkLabels, digiatReportUrl, type SuggestedCheck, type WidgetTurn } from "./types";
+import {
+  checkLabels,
+  digiatReportUrl,
+  type SuggestedCheck,
+  type WidgetTurn,
+} from "./types";
 
-const actionClass = "btn btn-yellow min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+const actionClass =
+  "btn btn-yellow min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 export function QuickChatLoading() {
   return (
-    <div role="status" className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-widget bg-background/60 px-2 text-center backdrop-blur-sm">
+    <div
+      role="status"
+      className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-widget bg-background/60 px-2 text-center backdrop-blur-sm"
+    >
       <Image
         src="/pictures/ui/loading.png"
         alt=""
@@ -26,7 +35,12 @@ export function QuickChatLoading() {
   );
 }
 
-export function QuickChatHistory({ turns, pending, transcriptRef, onCheck }: {
+export function QuickChatHistory({
+  turns,
+  pending,
+  transcriptRef,
+  onCheck,
+}: {
   turns: WidgetTurn[];
   pending: boolean;
   transcriptRef: Ref<HTMLDivElement>;
@@ -54,7 +68,9 @@ export function QuickChatHistory({ turns, pending, transcriptRef, onCheck }: {
         {turns.map(({ submissionId, input, response }) => (
           <article key={submissionId} className="space-y-3">
             {input.text && (
-              <p className="ml-auto w-fit max-w-[85%] rounded-widget bg-muted px-3 py-2 text-widget-body wrap-anywhere whitespace-pre-wrap">{input.text}</p>
+              <p className="ml-auto w-fit max-w-[85%] rounded-widget bg-muted px-3 py-2 text-widget-body wrap-anywhere whitespace-pre-wrap">
+                {input.text}
+              </p>
             )}
             <motion.div
               className="flex items-start gap-2"
@@ -62,20 +78,41 @@ export function QuickChatHistory({ turns, pending, transcriptRef, onCheck }: {
               animate={{ opacity: 1 }}
               transition={{ duration: reducedMotion ? 0 : 0.2 }}
             >
-              <Image src="/pictures/ui/customer_service_avatar.png" alt="客服" width={32} height={32} loading="eager" unoptimized className="size-8 shrink-0 object-contain" />
+              <Image
+                src="/pictures/ui/customer_service_avatar.png"
+                alt="客服"
+                width={32}
+                height={32}
+                loading="eager"
+                unoptimized
+                className="size-8 shrink-0 object-contain"
+              />
               <div className="min-w-0 flex-1 space-y-2">
                 <CheckGuidance response={response} inChat />
                 {!!response.suggestedActions?.length && (
                   <div className="flex flex-wrap gap-2">
-                    {response.suggestedActions.map((kind) => kind === "report" ? (
-                      <a key={kind} className={actionClass} href={digiatReportUrl} target="_blank" rel="noreferrer">
-                        前往數發部通報
-                      </a>
-                    ) : (
-                      <button key={kind} type="button" onClick={() => onCheck(kind)} className={actionClass}>
-                        前往{checkLabels[kind]}
-                      </button>
-                    ))}
+                    {response.suggestedActions.map((kind) =>
+                      kind === "report" ? (
+                        <a
+                          key={kind}
+                          className={actionClass}
+                          href={digiatReportUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          前往數發部通報
+                        </a>
+                      ) : (
+                        <button
+                          key={kind}
+                          type="button"
+                          onClick={() => onCheck(kind)}
+                          className={actionClass}
+                        >
+                          前往{checkLabels[kind]}
+                        </button>
+                      ),
+                    )}
                   </div>
                 )}
                 <CaseCarousel cases={response.cases} />

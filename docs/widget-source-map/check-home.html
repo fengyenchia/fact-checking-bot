@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>查證首頁｜畫面與檔案對照</title>
+  <link rel="stylesheet" href="map.css">
+</head>
+<body>
+<nav aria-label="畫面對照圖"><a href="index.html">索引</a> <a href="usage-guide.html">使用說明</a> <a href="check-home.html" aria-current="page">查證首頁</a> <a href="check-flow.html">查證流程</a> <a href="threads-and-chat.html">貼文與聊天</a></nav>
+<main>
+  <h1>查證首頁</h1>
+  <p class="caption">首頁選單、入口與共用樣式</p>
+  <div class="map-head" aria-hidden="true"><span>畫面區塊</span><span>修改位置</span></div>
+  <div class="map">
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="標題與外框"><span class="preview-title">「這是詐騙嗎？」</span></button>
+    <div class="source-note"><strong>標題與外框</strong><code>components/chatbot/chatbot-widget.tsx:389</code><p>找 Dialog.Popup 與 Dialog.Title。首頁與說明頁的標題固定在頂部，插圖和選單放在下方可捲動的內容區，關閉按鈕固定在底部。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="首頁封面"><img class="preview-art" alt="Widget 首頁封面" src="../../public/pictures/covers/home.png"></button>
+    <div class="source-note"><strong>首頁封面</strong><code>public/pictures/covers/home.png</code><p>各查證功能封面路徑在 components/chatbot/types.ts 的 checkImageUrls。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="首頁文案、按鈕排列"><span class="preview-pills"><span>連結查證</span><span>對話評估</span><span>帳號查證</span><span>快速對話</span></span></button>
+    <div class="source-note"><strong>首頁文案、按鈕排列</strong><code>components/chatbot/check-inputs.tsx:13</code><p>找 CheckMenu。四個按鈕的名稱共用 types.ts 的 checkLabels。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="進入說明頁"><span class="preview-action">如何使用？</span></button>
+    <div class="source-note"><strong>進入說明頁</strong><code>components/chatbot/check-inputs.tsx:41</code><p>入口文字在 CheckMenu，切頁在 chatbot-widget.tsx 的 showInstructions。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="共用樣式">黃色按鈕與字級</button>
+    <div class="source-note"><strong>共用樣式</strong><code>app/globals.css:177</code><p>標題 36 px，副標題與按鈕 20/28 px，內文 16/24 px，其他 16 px，自動行高。風險大標使用 .text-widget-warning 的 64 px Noto Sans TC 粗體。圓角在 --radius-widget。</p></div>
+  </div>
+</main>
+<script>
+  const map = document.querySelector('.map');
+  map.addEventListener('click', (event) => {
+    const selected = event.target.closest('button.screen-piece');
+    if (!selected) return;
+    for (const button of map.querySelectorAll('button.screen-piece')) {
+      button.setAttribute('aria-pressed', String(button === selected));
+      button.nextElementSibling.classList.toggle('is-selected', button === selected);
+    }
+  });
+</script>
+</body>
+</html>

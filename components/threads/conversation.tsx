@@ -169,7 +169,7 @@ export function Conversation({ canRestart }: { canRestart: boolean }) {
           </div>
         )}
         <ol
-          className={`space-y-2.5 ${dialogueSelecting ? "min-h-0 overflow-y-auto overscroll-y-contain bg-white p-3" : ""}`}
+          className={`space-y-2.5 ${dialogueSelecting ? "min-h-0 overflow-y-auto overscroll-y-contain rounded-widget bg-white p-3" : ""}`}
           aria-label="對話訊息"
           aria-describedby={dialogueSelecting ? "dialogue-selection-hint" : undefined}
         >
@@ -190,7 +190,7 @@ export function Conversation({ canRestart }: { canRestart: boolean }) {
           ))}
         </ol>
         {dialogueSelecting && (
-          <p id="dialogue-selection-hint" className="widget-font text-widget-body mt-2 shrink-0 self-center bg-yellow3 px-4 py-1 text-black">
+          <p id="dialogue-selection-hint" className="widget-font text-widget-body mt-2 shrink-0 self-center rounded-widget bg-yellow3 px-4 py-1 text-black">
             點選以選取對話
           </p>
         )}

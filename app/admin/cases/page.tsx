@@ -6,7 +6,7 @@ import { AdminForm } from "@/components/admin/form"
 import { AdminLoading, AdminShell, DatabaseNotice } from "@/components/admin/shell"
 import { readCases } from "@/lib/admin/data"
 import { requireAdmin } from "@/lib/admin/session"
-import { regenerateHomepage } from "../data-actions"
+import { refreshCases, regenerateHomepage } from "../data-actions"
 
 type Query = Promise<{ edit?: string | string[] }>
 
@@ -22,9 +22,12 @@ async function CasesContent({ searchParams }: { searchParams: Query }) {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold">官方案例</h2>
-          <p className="mt-1 text-sm text-muted-foreground">儲存成功後，Widget 查證可找到相關案例。</p>
+          <p className="mt-1 text-sm text-muted-foreground">共 {cases.length} 筆案例。儲存成功後，Widget 查證可找到相關案例。</p>
         </div>
-        <AdminForm action={regenerateHomepage} label="更新首頁案例卡" pendingLabel="更新中…" inline />
+        <div className="flex flex-wrap gap-2">
+          <AdminForm action={refreshCases} label="重新讀取案例" pendingLabel="讀取中…" inline />
+          <AdminForm action={regenerateHomepage} label="更新首頁案例卡" pendingLabel="更新中…" inline />
+        </div>
       </div>
       <div className="overflow-x-auto rounded-xl border">
         <table className="w-full min-w-[78rem] text-left text-sm">
