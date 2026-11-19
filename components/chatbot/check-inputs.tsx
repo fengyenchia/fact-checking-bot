@@ -18,7 +18,7 @@ export function CheckMenu({
   onHelp: () => void;
 }) {
   return (
-    <div className="mx-auto flex w-full max-w-64 flex-1 flex-col justify-center gap-5 px-5 py-4 text-center">
+    <div className="mx-auto my-auto flex w-full max-w-64 shrink-0 flex-col gap-5 px-5 py-4 text-center">
       <p className="text-widget-body">
         別慌別慌！
         <br />
@@ -46,7 +46,7 @@ export function CheckMenu({
 
 export function CheckGuide({ onHome }: { onHome: () => void }) {
   return (
-    <div className="mx-auto w-full max-w-72 px-5 py-4">
+    <div className="mx-auto w-full max-w-72 shrink-0 px-5 py-4">
       <section
         aria-labelledby="widget-guide-title"
         className="space-y-3 rounded-widget border border-black3 px-4 py-4"

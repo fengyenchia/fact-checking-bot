@@ -215,7 +215,7 @@ export function ChatbotWidget({
   const showCheckIntro = activeKind !== null && !showingChatHistory;
   const showChatIntro = showCheckIntro && activeKind === "chat";
   const coverSpacing = !showCheckIntro
-    ? "pt-4"
+    ? "shrink-0 pt-4"
     : showChatIntro || activeKind === "dialogue" ? "shrink-0" : "my-auto shrink-0";
   const coverImage = (
     <Image
@@ -421,7 +421,6 @@ export function ChatbotWidget({
                   >
                     {activeKind ? `${checkLabels[activeKind]}${showingDetailResult ? "結果" : ""}` : "「這是詐騙嗎？」"}
                   </Dialog.Title>
-                  {!showingDetailResult && !showingChatHistory && !showCheckIntro && coverImage}
                 </header>
                 {detailResult ? (
                   <motion.div
@@ -561,7 +560,8 @@ export function ChatbotWidget({
                     </form>
                   </div>
                 ) : (
-                  <div key={showInstructions ? "guide" : "menu"} className="flex min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                  <div key={showInstructions ? "guide" : "menu"} className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
+                    {coverImage}
                     {showInstructions ? (
                       <CheckGuide onHome={() => setShowInstructions(false)} />
                     ) : (
