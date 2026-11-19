@@ -14,15 +14,15 @@
   <div class="map-head" aria-hidden="true"><span>畫面區塊</span><span>修改位置</span></div>
   <div class="map">
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="Widget 標題"><span class="preview-title">「這是詐騙嗎？」</span></button>
-    <div class="source-note"><strong>Widget 標題</strong><code>components/chatbot/chatbot-widget.tsx:417</code><p>找 Dialog.Title 改標題文字。字級與粗體在 app/globals.css 的 .text-widget-title。</p></div>
+    <div class="source-note"><strong>Widget 標題</strong><code>components/chatbot/chatbot-widget.tsx:411</code><p>找 Dialog.Title 改標題文字。標題固定在頂部，字級與粗體在 app/globals.css 的 .text-widget-title。</p></div>
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="首頁與說明頁的封面"><img class="preview-art" alt="Widget 首頁封面" src="../../public/pictures/covers/home.png"></button>
     <div class="source-note"><strong>首頁與說明頁的封面</strong><code>public/pictures/covers/home.png</code><p>換封面就替換這張圖；顯示尺寸在 chatbot-widget.tsx 的 Image。</p></div>
-    <button class="screen-piece" type="button" aria-pressed="false" aria-label="說明卡標題、內文與四項條列"><span class="preview-card"><strong>我是快速查核小工具！</strong><span class="text-small">透過四種簡易方式，快速辨認社群詐騙並通報。</span><span class="text-small">・連結查證<br>・對話評估<br>・帳號查證<br>・快速對話</span></span></button>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="說明卡標題、內文與四項條列"><span class="preview-card"><strong>我是野原星之助！</strong><span class="text-small">透過四種簡易方式，結合政府官方的通報數據，幫助使用者快速辨認社群詐騙並通報。<br>一起將詐騙一網打盡吧！</span><span class="text-small">・連結查證：說明說明～<br>・對話評估：說明說明～<br>・帳號查證：說明說明～<br>・快速對話：說明說明～</span></span></button>
     <div class="source-note"><strong>說明卡標題、內文與四項條列</strong><code>components/chatbot/check-inputs.tsx:47</code><p>找 CheckGuide。</p></div>
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="回首頁的位置與文字"><span class="preview-action">⌂ 回首頁</span></button>
     <div class="source-note"><strong>回首頁的位置與文字</strong><code>components/chatbot/check-inputs.tsx:74</code><p>按鈕緊接在說明卡下方。</p></div>
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="右下關閉按鈕">×</button>
-    <div class="source-note"><strong>右下關閉按鈕</strong><code>components/chatbot/chatbot-widget.tsx:590</code><p>找 Dialog.Close。</p></div>
+    <div class="source-note"><strong>右下關閉按鈕</strong><code>components/chatbot/chatbot-widget.tsx:584</code><p>找 Dialog.Close。關閉按鈕固定在底部，不跟內容一起捲動。</p></div>
   </div>
 </main>
 <script>

@@ -1,6 +1,7 @@
 import "server-only"
 
 import { randomUUID } from "node:crypto"
+import type { CheckResult } from "@/components/chatbot/types"
 import { getDatabase } from "@/lib/server/database"
 import { caseEmbeddingText, embedText, generateCaseMetadata, hasOpenAi } from "@/lib/server/openai"
 import { InvalidAdminInput, parseCaseSourceCity, parseCaseSourceDate, parseSourceUrl, readValue } from "./form-values"
@@ -19,8 +20,6 @@ export type CaseRecord = {
   source_city: string
   included: boolean
 }
-
-type CheckResult = { status: string; summary: string; sourceUrl?: string }
 
 export type Submission = {
   session_id: string

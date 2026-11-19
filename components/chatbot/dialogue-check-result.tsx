@@ -1,23 +1,35 @@
 import { CaseCarousel } from "@/components/case-card";
 
-import { digiatReportUrl, type WidgetTurn } from "./types";
+import { dialogueRiskLabels, digiatReportUrl, type WidgetTurn } from "./types";
 
 export function DialogueCheckResult({ turn }: { turn: WidgetTurn }) {
   const { results, cases } = turn.response;
   const result = results.dialogue;
   if (!result) return null;
 
-  const hasRisk = result.verdict === "risk";
+  const assessment = result.dialogueAssessment;
+  if (!assessment) {
+    return (
+      <section aria-label="對話評估結果" className="mx-auto w-full max-w-96 space-y-3 px-5 pt-10 pb-3 text-center">
+        <h2 className="text-widget-title">請重新評估</h2>
+        <p role="status" className="text-widget-body">這是先前的評估紀錄，請重新選取訊息，以目前內容進行 AI 評估。</p>
+      </section>
+    );
+  }
+
+  const hasRisk = assessment.riskLevel !== "insufficient";
   const highlights = result.highlights?.length ? result.highlights : [result.summary];
 
   return (
     <section aria-label="對話評估結果" className="mx-auto w-full max-w-96 space-y-3 px-5 pt-10 pb-3 sm:pt-8">
       <div role="status" className="space-y-1.5 text-center">
-        <p className="text-widget-body">此對話具</p>
-        <h2 className={hasRisk ? "text-widget-warning" : "text-widget-title"}>
-          {hasRisk ? "極高風險" : "有限線索"}
+        <p className="text-widget-body">此對話</p>
+        <h2 className="text-widget-warning">
+          {dialogueRiskLabels[assessment.riskLevel]}
         </h2>
-        {hasRisk && <p className="text-widget-body font-semibold text-orange">建議立即停止交易</p>}
+        <p className={`text-widget-body ${hasRisk ? "font-semibold text-orange" : ""}`}>
+          {hasRisk ? result.summary : "線索不足不代表交易安全，請補充相關訊息。"}
+        </p>
       </div>
       <ul aria-label="評估重點" className="space-y-2">
         {highlights.map((highlight) => (

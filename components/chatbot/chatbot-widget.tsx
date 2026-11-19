@@ -212,9 +212,8 @@ export function ChatbotWidget({
   const showCheckSpinner = accountLoading || (pending && activeKind === "url");
   const accountLoadingButtonStyle = accountLoading ? "disabled:opacity-100" : "";
   const showingChatHistory = activeKind === "chat" && activeTurns.length > 0;
-  const showCheckIntro = activeKind !== null && !showingChatHistory;
-  const showChatIntro = showCheckIntro && activeKind === "chat";
-  const coverSpacing = !showCheckIntro
+  const showChatIntro = activeKind === "chat";
+  const coverSpacing = activeKind === null
     ? "shrink-0 pt-4"
     : showChatIntro || activeKind === "dialogue" ? "shrink-0" : "my-auto shrink-0";
   const coverImage = (
@@ -435,7 +434,7 @@ export function ChatbotWidget({
                     {coverImage}
                     <div className="shrink-0 space-y-3 text-center">
                       {pending ? (
-                        <p role="status" className="text-widget-body">努力讀取中…敬請稍候</p>
+                        <p role="status" className="text-widget-body motion-safe:animate-bounce">努力讀取中…敬請稍候</p>
                       ) : (
                         <>
                           {error && <p role="alert" className="text-widget-note text-orange">{error}</p>}
@@ -488,14 +487,14 @@ export function ChatbotWidget({
                     tabIndex={activeKind === "chat" ? 0 : undefined}
                     role={activeKind === "chat" ? "region" : undefined}
                     aria-label={activeKind === "chat" ? "快速對話內容" : undefined}
-                    className={`${checkBody} ${showCheckIntro ? checkIntroSpacing : ""} ${activeKind === "chat" ? "scrollbar-none" : ""}`}
+                    className={`${checkBody} ${checkIntroSpacing} ${activeKind === "chat" ? "scrollbar-none" : ""}`}
                   >
                     {showChatIntro ? (
                       <div className="my-auto flex shrink-0 flex-col gap-5 px-5">
                         {coverImage}
                         <p className="shrink-0 text-center text-widget-body whitespace-pre-line">{checkPrompts.chat}</p>
                       </div>
-                    ) : showCheckIntro && coverImage}
+                    ) : coverImage}
                     <form
                       onSubmit={(event) => {
                         event.preventDefault();

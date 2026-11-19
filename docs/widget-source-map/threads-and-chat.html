@@ -16,13 +16,13 @@
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="貼文排版與貼文內容">首頁貼文</button>
     <div class="source-note"><strong>貼文排版與貼文內容</strong><code>components/threads/feed.tsx:9</code><p>作者、貼文文字與互動數字在 data/posts.ts。</p></div>
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="案例卡版面">相關案例</button>
-    <div class="source-note"><strong>案例卡版面</strong><code>components/case-card.tsx:24</code><p>首頁、對話評估與快速對話共用橫向案例卡。案例查詢與選卡在 lib/server/retrieval.ts。</p></div>
+    <div class="source-note"><strong>案例卡版面</strong><code>components/case-card.tsx:24</code><p>首頁與兩種對話共用橫向案例卡。RAG 在 lib/server/retrieval.ts；兩功能共用 ID 驗證及 AI 順序在 lib/server/case-selection.ts。快速對話選卡指令在 lib/server/quick-chat.ts，對話評估指令在 lib/server/dialogue-assessment.ts。</p></div>
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="帳號名與對話劇本">是詐騙ㄛ ｜ @giveme_money</button>
     <div class="source-note"><strong>帳號名與對話劇本</strong><code>data/scenarios/ticket.ts:2</code><p>修改顯示名稱、帳號、訊息內容與出現間隔。</p></div>
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="聊天室、遮罩與勾選提示">點選以選取對話</button>
-    <div class="source-note"><strong>聊天室、遮罩與勾選提示</strong><code>components/threads/conversation.tsx:136</code><p>對話泡泡和勾選圈在 conversation-message.tsx。</p></div>
+    <div class="source-note"><strong>聊天室、遮罩與勾選提示</strong><code>components/threads/conversation.tsx:136</code><p>白色選取區和黃色「點選以選取對話」提示共用 20 px 圓角。對話泡泡和勾選圈在 conversation-message.tsx。</p></div>
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="勾選模式的底部面板">取消 ｜ 確定送出</button>
-    <div class="source-note"><strong>勾選模式的底部面板</strong><code>components/chatbot/chatbot-widget.tsx:348</code><p>找 dialogueSelecting 條件下的面板，可改對話評估標題、取消與確定送出按鈕。</p></div>
+    <div class="source-note"><strong>勾選模式的底部面板</strong><code>components/chatbot/chatbot-widget.tsx:346</code><p>找 dialogueSelecting 條件下的面板，可改對話評估標題、取消與確定送出按鈕。不顯示已選取的訊息數量。</p></div>
   </div>
 </main>
 <script>

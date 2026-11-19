@@ -19,22 +19,45 @@ export const checkImageUrls = {
 export type CheckKind = keyof typeof checkLabels;
 export type SuggestedCheck = "url" | "account";
 export type ChatAction = SuggestedCheck | "report";
+export type DialogueRiskLevel = "high" | "potential" | "insufficient";
+export const dialogueRiskLabels: Record<DialogueRiskLevel, string> = {
+  high: "極高風險",
+  potential: "潛在風險",
+  insufficient: "線索不足",
+};
 export type CheckResult = {
   status: "completed" | "failed";
   verdict?: "risk" | "unknown" | "official" | "caution";
   highlights?: string[];
+  caseSelection?: {
+    caseIds: string[];
+    retrievalStatus: "completed" | "unavailable";
+  };
+  dialogueAssessment?: {
+    riskLevel: DialogueRiskLevel;
+    evidence: { messageIndex: number; quote: string; reason: string }[];
+    caseIds: string[];
+    retrievalStatus: "completed" | "unavailable";
+  };
   summary: string;
   host?: string;
   domain?: string | null;
   subdomain?: string | null;
   sourceUrl?: string;
-  urlEvidence?: "official-list" | "twnic" | "brand" | "web-search";
+  urlEvidence?: "official-list" | "twnic" | "brand";
   sourceName?: string;
   accountDetails?: {
     lookupCount: number | null;
     caseStatus: string | null;
   };
 };
+
+export function urlResultLabel(result: CheckResult) {
+  if (result.urlEvidence === "twnic") return "有通報紀錄";
+  if (result.verdict === "official") return "安全";
+  if (result.verdict === "risk") return "有問題喔";
+  return "無法確認";
+}
 
 export type WidgetInput = {
   text?: string;

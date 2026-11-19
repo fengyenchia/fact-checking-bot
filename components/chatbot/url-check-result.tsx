@@ -1,14 +1,7 @@
 import { IconArrowUpRight } from "@tabler/icons-react";
 
 import { CheckGuidance, DomainDetails } from "./chatbot-turn";
-import { digiatReportUrl, type WidgetTurn } from "./types";
-
-const verdictLabels = {
-  risk: "潛在風險",
-  unknown: "無法確認",
-  official: "已核對",
-  caution: "需要留意",
-} as const;
+import { digiatReportUrl, urlResultLabel, type WidgetTurn } from "./types";
 
 export function UrlCheckResult({ turn }: { turn: WidgetTurn }) {
   const result = turn.response.results.url;
@@ -16,7 +9,7 @@ export function UrlCheckResult({ turn }: { turn: WidgetTurn }) {
 
   const verdict = result.verdict ?? "unknown";
   const isReported = result.urlEvidence === "twnic";
-  const status = isReported ? "曾被通報" : verdictLabels[verdict];
+  const status = urlResultLabel(result);
   const sourceName = result.sourceName ?? (result.sourceUrl ? "官方來源" : "暫無可核對來源");
   const statusColor = verdict === "official" ? "bg-green" : verdict === "risk" ? "bg-orange" : "bg-yellow2";
 
@@ -24,7 +17,7 @@ export function UrlCheckResult({ turn }: { turn: WidgetTurn }) {
     <section aria-label="連結查證結果" className="mx-auto w-full max-w-96 space-y-3 px-5 pt-10 pb-3 text-black sm:pt-8">
       <div role="status" className="space-y-1.5 text-center">
         <p className="text-widget-body">此連結</p>
-        <h2 className="text-widget-warning">{status}</h2>
+        <h2 className="text-widget-warning text-balance">{status}</h2>
       </div>
 
       {result.host && (

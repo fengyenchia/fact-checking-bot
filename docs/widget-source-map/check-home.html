@@ -14,7 +14,7 @@
   <div class="map-head" aria-hidden="true"><span>畫面區塊</span><span>修改位置</span></div>
   <div class="map">
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="標題與外框"><span class="preview-title">「這是詐騙嗎？」</span></button>
-    <div class="source-note"><strong>標題與外框</strong><code>components/chatbot/chatbot-widget.tsx:389</code><p>找 Dialog.Popup 與 Dialog.Title。首頁與說明頁的標題固定在頂部，插圖和選單放在下方可捲動的內容區，關閉按鈕固定在底部。</p></div>
+    <div class="source-note"><strong>標題與外框</strong><code>components/chatbot/chatbot-widget.tsx:383</code><p>找 Dialog.Popup 與 Dialog.Title。首頁與說明頁的標題固定在頂部，插圖和選單放在下方可捲動的內容區，關閉按鈕固定在底部。Widget 四角統一為 20 px。</p></div>
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="首頁封面"><img class="preview-art" alt="Widget 首頁封面" src="../../public/pictures/covers/home.png"></button>
     <div class="source-note"><strong>首頁封面</strong><code>public/pictures/covers/home.png</code><p>各查證功能封面路徑在 components/chatbot/types.ts 的 checkImageUrls。</p></div>
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="首頁文案、按鈕排列"><span class="preview-pills"><span>連結查證</span><span>對話評估</span><span>帳號查證</span><span>快速對話</span></span></button>
@@ -22,7 +22,7 @@
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="進入說明頁"><span class="preview-action">如何使用？</span></button>
     <div class="source-note"><strong>進入說明頁</strong><code>components/chatbot/check-inputs.tsx:41</code><p>入口文字在 CheckMenu，切頁在 chatbot-widget.tsx 的 showInstructions。</p></div>
     <button class="screen-piece" type="button" aria-pressed="false" aria-label="共用樣式">黃色按鈕與字級</button>
-    <div class="source-note"><strong>共用樣式</strong><code>app/globals.css:177</code><p>標題 36 px，副標題與按鈕 20/28 px，內文 16/24 px，其他 16 px，自動行高。風險大標使用 .text-widget-warning 的 64 px Noto Sans TC 粗體。圓角在 --radius-widget。</p></div>
+    <div class="source-note"><strong>共用樣式</strong><code>app/globals.css:138</code><p>標題 36 px，副標題與按鈕 20/28 px，內文 16/24 px，其他 16 px，自動行高。風險大標使用 .text-widget-warning 的 64 px Noto Sans TC 粗體。圓角在 --radius-widget。手機按住按鈕的變色設定在 .btn-yellow 和 .btn-black。</p></div>
   </div>
 </main>
 <script>

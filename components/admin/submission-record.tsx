@@ -1,4 +1,5 @@
 import type { Submission, SubmissionSession } from "@/lib/admin/data"
+import { dialogueRiskLabels, urlResultLabel } from "@/components/chatbot/types"
 import { DocumentLink } from "./document-link"
 
 const labels: Record<string, string> = {
@@ -73,11 +74,28 @@ function SubmissionRecord({ record }: { record: Submission }) {
             <h4 className="font-semibold">查證回覆</h4>
             {!response && <p className="text-muted-foreground">處理中或尚無回覆。</p>}
             {results.map(([kind, result]) => (
-              <p key={kind} className="break-all">
-                <span className="font-medium">{labels[kind] ?? kind}：</span>
-                {result.summary}{result.status === "failed" && "（可重試）"}
-                {result.sourceUrl && <> · <DocumentLink href={result.sourceUrl}>查證來源</DocumentLink></>}
-              </p>
+              <div key={kind} className="space-y-2 break-all">
+                <p>
+                  <span className="font-medium">{labels[kind] ?? kind}：</span>
+                  {kind === "url" && <>{urlResultLabel(result)} · </>}
+                  {result.dialogueAssessment && <>{dialogueRiskLabels[result.dialogueAssessment.riskLevel]} · </>}
+                  {result.summary}{result.status === "failed" && "（可重試）"}
+                  {result.sourceUrl && <> · <DocumentLink href={result.sourceUrl}>查證來源</DocumentLink></>}
+                </p>
+                {result.caseSelection?.retrievalStatus === "unavailable" && <p className="text-muted-foreground">本次案例檢索未完成，小客服僅依輸入內容回覆。</p>}
+                {result.dialogueAssessment && (
+                  <>
+                    {result.dialogueAssessment.evidence.length > 0 && (
+                      <ul className="space-y-1 rounded-lg bg-muted p-3">
+                        {result.dialogueAssessment.evidence.map((evidence, index) => (
+                          <li key={index}>「{evidence.quote}」：{evidence.reason}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {result.dialogueAssessment.retrievalStatus === "unavailable" && <p className="text-muted-foreground">本次案例檢索未完成，AI 僅依勾選內容評估。</p>}
+                  </>
+                )}
+              </div>
             ))}
             {response?.explanation && <p className="break-all whitespace-pre-wrap">{response.explanation}</p>}
             {response?.aiStatus === "unavailable" && <p className="text-muted-foreground">AI 說明暫時無法產生。</p>}
