@@ -52,7 +52,7 @@ const panelAction = `btn btn-black size-11 p-0 ${actionFocus}`;
 const checkBody = "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain";
 const checkIntroSpacing = "gap-5 pt-5";
 const checkPrompts: Record<Exclude<CheckKind, "dialogue">, string> = {
-  url: "對方傳來可疑連結嗎？\n先別點開！讓小咪幫你檢查看看 (*_*)",
+  url: "對方傳來可疑連結嗎？\n先別點開！馬上幫你檢查看看 (*_*)",
   account: "懷疑對方是可疑帳號？\n開始對話前先幫你檢查看看 (*_*)",
   chat: "不確定怎麼開始查證？\n放輕鬆，直接跟我們說說吧～",
 };
@@ -141,10 +141,27 @@ export function ChatbotWidget({
     }
   }, [sessionId, turns]);
 
-  useEffect(() => {
-    if (open && transcript.current) {
-      transcript.current.scrollTop = showingDetailResult ? 0 : transcript.current.scrollHeight;
+  useLayoutEffect(() => {
+    const panel = transcript.current;
+    if (!open || !panel) return;
+    if (showingDetailResult) {
+      panel.scrollTop = 0;
+      return;
     }
+    if (activeKind === "chat") {
+      const chatTurns = panel.querySelectorAll<HTMLElement>("[data-chat-turn]");
+      const latestTurn = chatTurns.item(chatTurns.length - 1);
+      if (latestTurn) {
+        if (pendingKind === "chat") return;
+        const padding = Number.parseFloat(window.getComputedStyle(panel).paddingTop) || 0;
+        panel.scrollTop = chatTurns.length === 1 ? 0 : Math.max(
+          0,
+          panel.scrollTop + latestTurn.getBoundingClientRect().top - panel.getBoundingClientRect().top - padding,
+        );
+        return;
+      }
+    }
+    panel.scrollTop = panel.scrollHeight;
   }, [open, activeKind, dialogueSelecting, turns, pendingKind, invalidUrl, showingDetailResult]);
 
   useLayoutEffect(() => {
@@ -214,7 +231,7 @@ export function ChatbotWidget({
   const showingChatHistory = activeKind === "chat" && activeTurns.length > 0;
   const showChatIntro = activeKind === "chat";
   const coverSpacing = activeKind === null
-    ? "shrink-0 pt-4"
+    ? "max-h-[30cqh] w-auto shrink-0 object-contain pt-4"
     : showChatIntro || activeKind === "dialogue" ? "shrink-0" : "my-auto shrink-0";
   const coverImage = (
     <Image
@@ -260,6 +277,14 @@ export function ChatbotWidget({
     onSelectedMessageIdsChange(selectionBeforeEdit.current);
     setActiveKind(null);
     onDialogueSelectingChange(false);
+  }
+
+  function openRelatedCheck(kind: CheckKind) {
+    if (kind === "dialogue") beginDialogueSelection();
+    else {
+      setDetailResultId(null);
+      setActiveKind(kind);
+    }
   }
 
   async function submit(kind: CheckKind) {
@@ -425,16 +450,18 @@ export function ChatbotWidget({
                     animate={{ opacity: 1 }}
                     transition={{ duration: reducedMotion ? 0 : 0.2 }}
                   >
-                    {activeKind === "account" && <AccountCheckResult turn={detailResult} />}
-                    {activeKind === "dialogue" && <DialogueCheckResult turn={detailResult} />}
-                    {activeKind === "url" && <UrlCheckResult turn={detailResult} />}
+                    {activeKind === "account" && <AccountCheckResult turn={detailResult} onCheck={openRelatedCheck} />}
+                    {activeKind === "dialogue" && <DialogueCheckResult turn={detailResult} onCheck={openRelatedCheck} />}
+                    {activeKind === "url" && (
+                      <UrlCheckResult turn={detailResult} onCheck={openRelatedCheck} />
+                    )}
                   </motion.div>
                 ) : activeKind === "dialogue" ? (
                   <div className={`${checkBody} ${checkIntroSpacing} items-center px-5`}>
                     {coverImage}
                     <div className="shrink-0 space-y-3 text-center">
                       {pending ? (
-                        <p role="status" className="text-widget-body motion-safe:animate-bounce">努力讀取中…敬請稍候</p>
+                        <p role="status" className="text-widget-body text-black motion-safe:animate-bounce">努力讀取中…敬請稍候</p>
                       ) : (
                         <>
                           {error && <p role="alert" className="text-widget-note text-orange">{error}</p>}
@@ -449,10 +476,7 @@ export function ChatbotWidget({
                       turns={activeTurns}
                       pending={pending}
                       transcriptRef={transcript}
-                      onCheck={(kind) => {
-                        setDetailResultId(null);
-                        setActiveKind(kind);
-                      }}
+                      onCheck={openRelatedCheck}
                     />
                     <form
                       className="shrink-0 space-y-2"
@@ -503,7 +527,7 @@ export function ChatbotWidget({
                       className="mx-auto w-full max-w-96 shrink-0 space-y-3 px-5"
                     >
                       {!showChatIntro && (
-                        <p role={showCheckSpinner ? "status" : undefined} className="text-center text-widget-body whitespace-pre-line">
+                        <p role={showCheckSpinner ? "status" : undefined} className="text-center text-widget-body whitespace-pre-line text-black">
                           {showCheckSpinner ? "努力查證中…敬請稍候" : checkPrompts[activeKind]}
                         </p>
                       )}
@@ -554,7 +578,7 @@ export function ChatbotWidget({
                     </form>
                   </div>
                 ) : (
-                  <div key={showInstructions ? "guide" : "menu"} className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
+                  <div key={showInstructions ? "guide" : "menu"} className="flex min-h-0 flex-1 flex-col overflow-hidden">
                     {coverImage}
                     {showInstructions ? (
                       <CheckGuide onHome={() => setShowInstructions(false)} />

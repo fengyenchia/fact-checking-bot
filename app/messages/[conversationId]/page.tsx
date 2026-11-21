@@ -13,14 +13,7 @@ type ConversationParams = Promise<{ conversationId: string }>;
 async function ConversationContent({ params }: { params: ConversationParams }) {
   const { conversationId } = await params;
   if (conversationId !== ticketConversationId) notFound();
-  return (
-    <Conversation
-      canRestart={
-        process.env.NODE_ENV === "development" ||
-        process.env.VERCEL_ENV === "preview"
-      }
-    />
-  );
+  return <Conversation />;
 }
 
 export default function ConversationPage({

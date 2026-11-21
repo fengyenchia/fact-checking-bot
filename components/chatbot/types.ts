@@ -17,8 +17,11 @@ export const checkImageUrls = {
 } as const;
 
 export type CheckKind = keyof typeof checkLabels;
-export type SuggestedCheck = "url" | "account";
+export const quickChatTools = ["url", "account", "dialogue"] as const;
+export type SuggestedCheck = typeof quickChatTools[number];
+// report is retained only to read previously saved replies.
 export type ChatAction = SuggestedCheck | "report";
+export type ChatReplySegment = { text: string; action: ChatAction | null; actions?: SuggestedCheck[] };
 export type DialogueRiskLevel = "high" | "potential" | "insufficient";
 export const dialogueRiskLabels: Record<DialogueRiskLevel, string> = {
   high: "極高風險",
@@ -29,6 +32,7 @@ export type CheckResult = {
   status: "completed" | "failed";
   verdict?: "risk" | "unknown" | "official" | "caution";
   highlights?: string[];
+  urlAnalysisStatus?: "completed" | "unavailable" | "local";
   caseSelection?: {
     caseIds: string[];
     retrievalStatus: "completed" | "unavailable";
@@ -53,11 +57,16 @@ export type CheckResult = {
 };
 
 export function urlResultLabel(result: CheckResult) {
-  if (result.urlEvidence === "twnic") return "有通報紀錄";
-  if (result.verdict === "official") return "安全";
-  if (result.verdict === "risk") return "有問題喔";
-  return "無法確認";
+  if (result.urlEvidence === "twnic") return "曾被通報";
+  if (result.verdict === "official") return "暫無疑慮";
+  if (result.verdict === "risk") return "存在疑慮";
+  return "無法確定";
 }
+
+export const unknownUrlFallback = {
+  highlight: "來源仍待確認",
+  summary: "尚無法確認來源，請勿輸入付款資料。",
+} as const;
 
 export type WidgetInput = {
   text?: string;
@@ -70,9 +79,9 @@ export type WidgetResponse = {
   results: Partial<Record<CheckKind, CheckResult>>;
   explanation: string | null;
   suggestedActions?: ChatAction[];
+  chatSegments?: ChatReplySegment[];
   cases: CaseCardData[];
   aiStatus?: "completed" | "unavailable" | "local";
-  reportUrl: string | null;
 };
 
 export type WidgetTurn = {

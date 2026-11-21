@@ -4,16 +4,11 @@ import type { Ref } from "react";
 
 import { CaseCarousel } from "@/components/case-card";
 
-import { CheckGuidance } from "./chatbot-turn";
+import { QuickChatReply } from "./quick-chat-reply";
 import {
-  checkLabels,
-  digiatReportUrl,
   type SuggestedCheck,
   type WidgetTurn,
 } from "./types";
-
-const actionClass =
-  "btn btn-yellow min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 export function QuickChatLoading() {
   return (
@@ -30,7 +25,7 @@ export function QuickChatLoading() {
         unoptimized
         className="h-auto min-h-0 w-[55%] max-w-55 object-contain motion-safe:animate-spin motion-safe:[animation-duration:1.8s]"
       />
-      <span className="text-widget-note">努力讀取中…敬請稍候</span>
+      <span className="text-widget-note text-black">努力讀取中…敬請稍候</span>
     </div>
   );
 }
@@ -66,7 +61,7 @@ export function QuickChatHistory({
           [&::-webkit-scrollbar-track]:my-2 [&::-webkit-scrollbar-track]:rounded-widget [&::-webkit-scrollbar-track]:bg-[var(--black4)]"
       >
         {turns.map(({ submissionId, input, response }) => (
-          <article key={submissionId} className="space-y-3">
+          <article key={submissionId} data-chat-turn={submissionId} className="space-y-3 last:min-h-full">
             {input.text && (
               <p className="ml-auto w-fit max-w-[85%] rounded-widget bg-muted px-3 py-2 text-widget-body wrap-anywhere whitespace-pre-wrap">
                 {input.text}
@@ -88,33 +83,7 @@ export function QuickChatHistory({
                 className="size-8 shrink-0 object-contain"
               />
               <div className="min-w-0 flex-1 space-y-2">
-                <CheckGuidance response={response} inChat />
-                {!!response.suggestedActions?.length && (
-                  <div className="flex flex-wrap gap-2">
-                    {response.suggestedActions.map((kind) =>
-                      kind === "report" ? (
-                        <a
-                          key={kind}
-                          className={actionClass}
-                          href={digiatReportUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          前往數發部通報
-                        </a>
-                      ) : (
-                        <button
-                          key={kind}
-                          type="button"
-                          onClick={() => onCheck(kind)}
-                          className={actionClass}
-                        >
-                          前往{checkLabels[kind]}
-                        </button>
-                      ),
-                    )}
-                  </div>
-                )}
+                <QuickChatReply response={response} onCheck={onCheck} />
                 <CaseCarousel cases={response.cases} />
               </div>
             </motion.div>

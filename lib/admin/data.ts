@@ -1,7 +1,7 @@
 import "server-only"
 
 import { randomUUID } from "node:crypto"
-import type { CheckResult } from "@/components/chatbot/types"
+import type { ChatReplySegment, CheckResult } from "@/components/chatbot/types"
 import { getDatabase } from "@/lib/server/database"
 import { caseEmbeddingText, embedText, generateCaseMetadata, hasOpenAi } from "@/lib/server/openai"
 import { InvalidAdminInput, parseCaseSourceCity, parseCaseSourceDate, parseSourceUrl, readValue } from "./form-values"
@@ -35,6 +35,7 @@ export type Submission = {
   response: {
     results?: Record<string, CheckResult>
     explanation?: string | null
+    chatSegments?: ChatReplySegment[]
     aiStatus?: string
     cases?: { id: string; title: string; summary: string; sourceName: string; sourceUrl: string }[]
   } | null

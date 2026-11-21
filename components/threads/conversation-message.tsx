@@ -18,7 +18,7 @@ export function ConversationMessage({
 }) {
   const [copied, setCopied] = useState(false);
   const seller = message.sender === "seller";
-  const bubbleClass = `max-w-[82%] rounded-[20px] px-3.5 py-2 text-left text-[15px] leading-snug wrap-anywhere ${seller ? "bg-neutral-100 text-neutral-900" : "bg-neutral-950 text-white"}`;
+  const bubbleClass = `max-w-[82%] rounded-[20px] px-3.5 py-2 text-left text-[15px] leading-snug whitespace-pre-line wrap-anywhere ${seller ? "bg-neutral-100 text-neutral-900" : "bg-neutral-950 text-white"}`;
 
   async function copyLink() {
     try {

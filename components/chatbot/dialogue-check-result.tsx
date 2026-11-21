@@ -1,8 +1,9 @@
 import { CaseCarousel } from "@/components/case-card";
+import { OtherCheckActions, type FollowUpCheck } from "./check-result-layout";
 
 import { dialogueRiskLabels, digiatReportUrl, type WidgetTurn } from "./types";
 
-export function DialogueCheckResult({ turn }: { turn: WidgetTurn }) {
+export function DialogueCheckResult({ turn, onCheck }: { turn: WidgetTurn; onCheck: (kind: FollowUpCheck) => void }) {
   const { results, cases } = turn.response;
   const result = results.dialogue;
   if (!result) return null;
@@ -38,12 +39,17 @@ export function DialogueCheckResult({ turn }: { turn: WidgetTurn }) {
           </li>
         ))}
       </ul>
-      {hasRisk && (
+      {hasRisk ? (
         <div className="space-y-2 text-center">
           <p className="text-widget-body">上述對話可能包含詐騙行為。<br />是否進行通報？</p>
           <a href={digiatReportUrl} target="_blank" rel="noreferrer" className="btn btn-yellow min-h-11 focus-visible:outline-2 focus-visible:outline-ring">
             前往數發部通報
           </a>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <p className="text-center text-widget-body">建議先停止交易，利用以下機制再次查證，或是前往通報喔！</p>
+          <OtherCheckActions onCheck={onCheck} />
         </div>
       )}
       <CaseCarousel cases={cases} />

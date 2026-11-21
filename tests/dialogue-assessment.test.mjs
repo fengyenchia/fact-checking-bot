@@ -8,6 +8,7 @@ import { loadTs } from "./helpers/load-server-module.mjs";
 
 const scenario = loadTs("data/scenarios/ticket.ts");
 const widgetTypes = loadTs("components/chatbot/types.ts");
+const accountCopy = loadTs("lib/account-check-copy.ts");
 const caseSelection = loadTs("lib/server/case-selection.ts");
 const caseFixture = {
   card: { id: "buyer-case", title: "假買家索驗證碼", summary: "假買家以開通賣場收款為由索取簡訊驗證碼。", sourceName: "165", sourceUrl: "https://165dashboard.tw/city-case-summary" },
@@ -48,12 +49,15 @@ function harness({ output = assessment(), key = true, database = true, relatedCa
     "node:url": { domainToUnicode },
     tldts: {},
     "@/components/chatbot/types": widgetTypes,
+    "@/lib/account-check-copy": accountCopy,
+    "@/lib/quick-chat-actions": {},
     "@/data/scenarios/ticket": scenario,
     "@/lib/widget-url": {},
     "./database": { getDatabase: () => database ? (() => []) : null },
     "./dialogue-assessment": dialogue,
     "./case-selection": caseSelection,
     "./quick-chat": {},
+    "./url-analysis": {},
     "./official-hosts": {},
     "./openai": openai,
     "./reported-urls": {},
@@ -107,7 +111,6 @@ test("a greeting can produce insufficient evidence instead of a preassigned high
   const response = await app.processSubmission(input("你好，想詢問哪個商品？", "follow-up-3"));
   assert.equal(response.results.dialogue.verdict, "unknown");
   assert.equal(response.results.dialogue.dialogueAssessment.riskLevel, "insufficient");
-  assert.equal(response.reportUrl, null);
 });
 
 test("a non-payment shopping scam mechanism can produce potential risk without a keyword mapping", async () => {
@@ -116,7 +119,6 @@ test("a non-payment shopping scam mechanism can produce potential risk without a
   const response = await app.processSubmission(input(text));
   assert.equal(response.results.dialogue.verdict, "caution");
   assert.equal(response.results.dialogue.dialogueAssessment.riskLevel, "potential");
-  assert.ok(response.reportUrl);
 });
 
 for (const [name, options, expectedRetrieval] of [
@@ -147,7 +149,6 @@ for (const [name, change] of [
     const response = await harness({ output }).processSubmission(input());
     assert.equal(response.results.dialogue.status, "failed");
     assert.equal(response.results.dialogue.verdict, undefined);
-    assert.equal(response.reportUrl, null);
     assert.equal(response.aiStatus, "unavailable");
   });
 }
@@ -163,7 +164,6 @@ for (const [name, options] of [
     const response = await app.processSubmission(input());
     assert.equal(response.results.dialogue.status, "failed");
     assert.equal(response.results.dialogue.dialogueAssessment, undefined);
-    assert.equal(response.reportUrl, null);
     if (options.key === false) assert.equal(app.requests.length, 0);
   });
 }
@@ -176,24 +176,35 @@ test("server restores original text and rejects forged selection IDs", () => {
   assert.throws(() => app.validateSubmission(input("偽造內容")), /勾選的訊息/);
 });
 
+const resultLayout = loadTs("components/chatbot/check-result-layout.tsx", {
+  "react/jsx-runtime": jsxRuntime,
+  "./types": widgetTypes,
+});
 const { DialogueCheckResult } = loadTs("components/chatbot/dialogue-check-result.tsx", {
   "react/jsx-runtime": jsxRuntime,
   "./types": widgetTypes,
+  "./check-result-layout": resultLayout,
   "@/components/case-card": { CaseCarousel: () => null },
 });
 
 for (const level of ["high", "potential", "insufficient"]) {
   test(`result view renders the ${level} assessment and corresponding report action`, async () => {
     const response = await harness({ output: assessment(level) }).processSubmission(input());
-    const html = renderToStaticMarkup(createElement(DialogueCheckResult, { turn: { response } }));
+    const html = renderToStaticMarkup(createElement(DialogueCheckResult, { turn: { response }, onCheck: () => {} }));
     assert.ok(html.includes(widgetTypes.dialogueRiskLabels[level]));
     assert.equal(html.includes("前往數發部通報"), level !== "insufficient");
+    for (const label of ["帳號查證", "對話評估", "快速對話", "前往通報"]) {
+      assert.equal(html.includes(`>${label}<`), level === "insufficient");
+    }
+    assert.equal(html.includes("利用以下機制再次查證"), level === "insufficient");
+    if (level === "insufficient") assert.ok(html.includes(widgetTypes.digiatReportUrl));
     if (level !== "high") assert.equal(html.includes("極高風險"), false);
   });
 }
 
 test("legacy script results request a fresh assessment instead of implying a current AI decision", () => {
   const html = renderToStaticMarkup(createElement(DialogueCheckResult, {
+    onCheck: () => {},
     turn: { response: { results: { dialogue: { status: "completed", verdict: "risk", summary: "舊紀錄" } }, cases: [] } },
   }));
   assert.ok(html.includes("請重新評估"));

@@ -11,6 +11,11 @@ import { useEffect, useRef, useState } from "react";
 import { ChatbotWidget } from "@/components/chatbot/chatbot-widget";
 import { Button } from "@/components/ui/button";
 import {
+  conversationDateKey,
+  restoreConversationSession,
+  type ConversationSession,
+} from "@/lib/conversation-session";
+import {
   followUpMessages,
   messageIntervalMs,
   openingMessages,
@@ -23,8 +28,6 @@ import {
 import { Avatar } from "./avatar";
 import { ConversationMessage } from "./conversation-message";
 
-type Session = { id: string; sentAt: number | null };
-
 const storageKey = `threads-scenario:${scenarioVersion}`;
 const sentMessage: ScriptMessage = {
   id: "buyer-payment",
@@ -32,28 +35,16 @@ const sentMessage: ScriptMessage = {
   text: ticketReply,
 };
 
-function createSession(): Session {
-  return { id: crypto.randomUUID(), sentAt: null };
-}
-
-function restoreSession(): Session {
+function restoreSession(now: Date): ConversationSession {
   try {
-    const raw = localStorage.getItem(storageKey);
-    if (raw) {
-      const saved: Session = JSON.parse(raw);
-      if (
-        typeof saved?.id === "string" &&
-        (saved.sentAt === null || Number.isFinite(saved.sentAt))
-      )
-        return saved;
-    }
+    return restoreConversationSession(localStorage.getItem(storageKey), now);
   } catch {
     // The mock conversation can run without browser storage.
   }
-  return createSession();
+  return restoreConversationSession(null, now);
 }
 
-function rememberSession(session: Session) {
+function rememberSession(session: ConversationSession) {
   try {
     localStorage.setItem(storageKey, JSON.stringify(session));
   } catch {
@@ -61,8 +52,8 @@ function rememberSession(session: Session) {
   }
 }
 
-export function Conversation({ canRestart }: { canRestart: boolean }) {
-  const [session, setSession] = useState<Session | null>(null);
+export function Conversation() {
+  const [session, setSession] = useState<ConversationSession | null>(null);
   const [followUpsShown, setFollowUpsShown] = useState(0);
   const [dialogueSelecting, setDialogueSelecting] = useState(false);
   const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
@@ -70,12 +61,28 @@ export function Conversation({ canRestart }: { canRestart: boolean }) {
   const sentAt = session?.sentAt;
 
   useEffect(() => {
-    const handle = window.setTimeout(() => {
-      const initial = restoreSession();
+    let activeDay: string | null = null;
+    function syncSession() {
+      if (document.visibilityState === "hidden") return;
+      const now = new Date();
+      const today = conversationDateKey(now);
+      if (today === activeDay) return;
+      const initial = restoreSession(now);
       rememberSession(initial);
+      activeDay = today;
+      setDialogueSelecting(false);
+      setSelectedMessageIds([]);
+      setFollowUpsShown(0);
       setSession(initial);
-    }, 0);
-    return () => window.clearTimeout(handle);
+    }
+    const handle = window.setTimeout(syncSession, 0);
+    document.addEventListener("visibilitychange", syncSession);
+    window.addEventListener("focus", syncSession);
+    return () => {
+      window.clearTimeout(handle);
+      document.removeEventListener("visibilitychange", syncSession);
+      window.removeEventListener("focus", syncSession);
+    };
   }, []);
 
   useEffect(() => {
@@ -122,15 +129,6 @@ export function Conversation({ canRestart }: { canRestart: boolean }) {
     setSession(next);
   }
 
-  function restart() {
-    const next = createSession();
-    rememberSession(next);
-    setDialogueSelecting(false);
-    setSelectedMessageIds([]);
-    setFollowUpsShown(0);
-    setSession(next);
-  }
-
   return (
     <main className="relative flex h-[calc(100dvh-3.5rem-env(safe-area-inset-bottom))] min-h-0 flex-col">
       {dialogueSelecting && <div aria-hidden="true" className="fixed inset-0 z-30 bg-black/40" />}
@@ -147,15 +145,6 @@ export function Conversation({ canRestart }: { canRestart: boolean }) {
           <h1 className="truncate text-[15px] font-semibold">{ticketSellerName}</h1>
           <p className="truncate text-xs text-neutral-500">@{ticketSellerId}</p>
         </div>
-        {canRestart && session && (
-          <Button
-            variant="ghost"
-            className="h-10 shrink-0 px-2 text-xs text-neutral-600"
-            onClick={restart}
-          >
-            重新開始
-          </Button>
-        )}
         <span aria-hidden className="grid size-10 shrink-0 place-items-center">
           <IconDotsCircleHorizontal className="size-5" />
         </span>

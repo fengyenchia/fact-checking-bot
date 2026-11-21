@@ -1,5 +1,5 @@
 import type { Submission, SubmissionSession } from "@/lib/admin/data"
-import { dialogueRiskLabels, urlResultLabel } from "@/components/chatbot/types"
+import { checkLabels, dialogueRiskLabels, urlResultLabel } from "@/components/chatbot/types"
 import { DocumentLink } from "./document-link"
 
 const labels: Record<string, string> = {
@@ -82,6 +82,12 @@ function SubmissionRecord({ record }: { record: Submission }) {
                   {result.summary}{result.status === "failed" && "（可重試）"}
                   {result.sourceUrl && <> · <DocumentLink href={result.sourceUrl}>查證來源</DocumentLink></>}
                 </p>
+                {kind === "url" && !!result.highlights?.length && (
+                  <ul className="list-disc space-y-1 pl-5">
+                    {result.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
+                  </ul>
+                )}
+                {result.urlAnalysisStatus === "unavailable" && <p className="text-muted-foreground">本次網址 AI 分析未完成，保留「無法確定」與固定提示。</p>}
                 {result.caseSelection?.retrievalStatus === "unavailable" && <p className="text-muted-foreground">本次案例檢索未完成，小客服僅依輸入內容回覆。</p>}
                 {result.dialogueAssessment && (
                   <>
@@ -97,7 +103,16 @@ function SubmissionRecord({ record }: { record: Submission }) {
                 )}
               </div>
             ))}
-            {response?.explanation && <p className="break-all whitespace-pre-wrap">{response.explanation}</p>}
+            {response?.chatSegments?.length ? (
+              <div className="space-y-3">
+                {response.chatSegments.map((segment, index) => (
+                  <div key={index} className="space-y-1">
+                    <p className="break-all whitespace-pre-wrap">{segment.text}</p>
+                    {!!(segment.actions?.length || segment.action) && <p className="text-xs text-muted-foreground">按鈕：{(segment.actions ?? (segment.action ? [segment.action] : [])).map((action) => action === "report" ? "前往數發部通報" : `前往${checkLabels[action]}`).join("、")}</p>}
+                  </div>
+                ))}
+              </div>
+            ) : response?.explanation && <p className="break-all whitespace-pre-wrap">{response.explanation}</p>}
             {response?.aiStatus === "unavailable" && <p className="text-muted-foreground">AI 說明暫時無法產生。</p>}
             {!!response?.cases?.length && (
               <ul className="space-y-2">

@@ -10,19 +10,19 @@
 <nav aria-label="畫面對照圖"><a href="index.html">索引</a> <a href="usage-guide.html" aria-current="page">使用說明</a> <a href="check-home.html">查證首頁</a> <a href="check-flow.html">查證流程</a> <a href="threads-and-chat.html">貼文與聊天</a></nav>
 <main>
   <h1>使用說明</h1>
-  <p class="caption">標題、封面、說明卡、回首頁和關閉按鈕</p>
+  <p class="caption">固定標題與圖片、框內可捲動的實際說明文案、回首頁與關閉 · 2026-11-21 校正</p>
   <div class="map-head" aria-hidden="true"><span>畫面區塊</span><span>修改位置</span></div>
   <div class="map">
-    <button class="screen-piece" type="button" aria-pressed="false" aria-label="Widget 標題"><span class="preview-title">「這是詐騙嗎？」</span></button>
-    <div class="source-note"><strong>Widget 標題</strong><code>components/chatbot/chatbot-widget.tsx:411</code><p>找 Dialog.Title 改標題文字。標題固定在頂部，字級與粗體在 app/globals.css 的 .text-widget-title。</p></div>
-    <button class="screen-piece" type="button" aria-pressed="false" aria-label="首頁與說明頁的封面"><img class="preview-art" alt="Widget 首頁封面" src="../../public/pictures/covers/home.png"></button>
-    <div class="source-note"><strong>首頁與說明頁的封面</strong><code>public/pictures/covers/home.png</code><p>換封面就替換這張圖；顯示尺寸在 chatbot-widget.tsx 的 Image。</p></div>
-    <button class="screen-piece" type="button" aria-pressed="false" aria-label="說明卡標題、內文與四項條列"><span class="preview-card"><strong>我是野原星之助！</strong><span class="text-small">透過四種簡易方式，結合政府官方的通報數據，幫助使用者快速辨認社群詐騙並通報。<br>一起將詐騙一網打盡吧！</span><span class="text-small">・連結查證：說明說明～<br>・對話評估：說明說明～<br>・帳號查證：說明說明～<br>・快速對話：說明說明～</span></span></button>
-    <div class="source-note"><strong>說明卡標題、內文與四項條列</strong><code>components/chatbot/check-inputs.tsx:47</code><p>找 CheckGuide。</p></div>
-    <button class="screen-piece" type="button" aria-pressed="false" aria-label="回首頁的位置與文字"><span class="preview-action">⌂ 回首頁</span></button>
-    <div class="source-note"><strong>回首頁的位置與文字</strong><code>components/chatbot/check-inputs.tsx:74</code><p>按鈕緊接在說明卡下方。</p></div>
-    <button class="screen-piece" type="button" aria-pressed="false" aria-label="右下關閉按鈕">×</button>
-    <div class="source-note"><strong>右下關閉按鈕</strong><code>components/chatbot/chatbot-widget.tsx:584</code><p>找 Dialog.Close。關閉按鈕固定在底部，不跟內容一起捲動。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="固定標題"><span class="preview-title">「這是詐騙嗎？」</span></button>
+    <div class="source-note"><strong>固定標題</strong><code data-source-path="components/chatbot/chatbot-widget.tsx" data-source-symbol="&lt;Dialog.Title" data-source-line="436">components/chatbot/chatbot-widget.tsx:436</code><code data-source-path="app/globals.css" data-source-symbol=".text-widget-title {" data-source-line="138">app/globals.css:138</code><p>文字在 Dialog.Title，字級與字重由 text-widget-title 統一定義。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="固定封面"><img class="preview-art" alt="Widget 使用說明封面" src="../../public/pictures/covers/home.png"></button>
+    <div class="source-note"><strong>固定封面</strong><code data-source-path="components/chatbot/chatbot-widget.tsx" data-source-symbol="const coverImage" data-source-line="236">components/chatbot/chatbot-widget.tsx:236</code><p>使用 public/pictures/covers/home.png，圖片不跟下方說明文字一起捲動。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="說明框標題、原文與框內捲動"><span class="preview-card"><strong>我是野原星之助！</strong><span class="text-small">透過四種簡易方式，結合政府官方的通報數據，幫助使用者快速辨認社群詐騙並通報。<br>一起將詐騙一網打盡吧！</span><span class="preview-scroll text-small"><span>連結查證：將使用者提供的連結與官方通報紀錄以及內建資料庫比對，判斷是否能安全打開該連結，以及是否需要通報。使用路徑：【首頁】 &gt; 【連結查證】 &gt; 【貼上連結】</span><span>對話評估：使用者可以直接於聊天室內勾選可疑訊息並交由 AI 分析該對話是否包含常見詐騙手法。使用路徑：【首頁】 &gt; 【對話評估】 &gt; 【選取對話】</span><span>帳號查證：比對已收錄的可疑 Threads 帳號，查看是否有通報紀錄。使用路徑：【首頁】 &gt; 【帳號查證】 &gt; 【輸入帳號 ID】</span><span>快速對話：若不確定從何開始查證，可以以自然語言的方式，與聊天機器人直接對話並獲得後續行動建議。使用路徑：【首頁】 &gt; 【快速對話】 &gt; 【輸入事件描述】</span></span></span></button>
+    <div class="source-note"><strong>說明框標題、原文與框內捲動</strong><code data-source-path="components/chatbot/check-inputs.tsx" data-source-symbol="export function CheckGuide" data-source-line="54">components/chatbot/check-inputs.tsx:54</code><code data-source-path="components/chatbot/check-inputs.tsx" data-source-symbol="aria-label=&quot;查證工具使用說明&quot;" data-source-line="63">components/chatbot/check-inputs.tsx:63</code><p>CheckGuide 控制說明框與原文。框線固定，只有框內文字可上下捲動，捲軸隱藏。左側已同步目前程式的四項說明文案；改畫面文字請改元件。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="框外固定的回首頁"><span class="preview-action">⌂ 回首頁</span></button>
+    <div class="source-note"><strong>框外固定的回首頁</strong><code data-source-path="components/chatbot/check-inputs.tsx" data-source-symbol="        回首頁" data-source-line="91">components/chatbot/check-inputs.tsx:91</code><p>按鈕固定在說明框外下方，不必捲到說明末尾才能使用；onHome 切回 Widget 選單。</p></div>
+    <button class="screen-piece" type="button" aria-pressed="false" aria-label="固定關閉按鈕">×</button>
+    <div class="source-note"><strong>固定關閉按鈕</strong><code data-source-path="components/chatbot/chatbot-widget.tsx" data-source-symbol="&lt;footer" data-source-line="594">components/chatbot/chatbot-widget.tsx:594</code><code data-source-path="components/chatbot/chatbot-widget.tsx" data-source-symbol="&lt;Dialog.Close" data-source-line="608">components/chatbot/chatbot-widget.tsx:608</code><p>底部 footer 不參與內容捲動；Dialog.Close 關閉 Widget。</p></div>
   </div>
 </main>
 <script>
