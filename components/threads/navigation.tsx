@@ -14,7 +14,7 @@ export function ThreadsNavigation({ active }: { active: "home" | "messages" }) {
   return (
     <nav
       aria-label="主要導覽"
-      className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 items-center border-t border-neutral-200 bg-white/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur"
+      className="relative z-20 grid w-full shrink-0 grid-cols-5 items-center border-t border-neutral-200 bg-white/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur"
     >
       <Link
         href="/"

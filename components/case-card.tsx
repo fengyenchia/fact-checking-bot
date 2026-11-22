@@ -27,7 +27,7 @@ function CaseCard({ item }: { item: CaseCardData }) {
       href={getDashboardUrl(item.sourceUrl)}
       target="_blank"
       rel="noreferrer"
-      className="flex h-full min-h-40 flex-col rounded-widget border border-black3 bg-white p-3 text-black hover:bg-muted/40 active:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="relative flex h-full min-h-40 flex-col rounded-widget border border-black3 bg-white p-3 text-black hover:bg-muted/40 active:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
       <h4 className="line-clamp-2 min-h-12 text-center text-base leading-6 wrap-anywhere">{item.title}</h4>
       <p className="line-clamp-3 text-sm leading-5 wrap-anywhere text-black3">{item.summary}</p>

@@ -130,7 +130,7 @@ export function Conversation() {
   }
 
   return (
-    <main className="relative flex h-[calc(100dvh-3.5rem-env(safe-area-inset-bottom))] min-h-0 flex-col">
+    <main className="relative flex h-full min-h-0 flex-col">
       {dialogueSelecting && <div aria-hidden="true" className="fixed inset-0 z-30 bg-black/40" />}
       <header inert={dialogueSelecting} className="flex shrink-0 items-center gap-2 border-b border-neutral-200 px-2 pt-[env(safe-area-inset-top)] sm:px-4">
         <Link

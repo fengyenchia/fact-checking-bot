@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "Widget Noto Sans TC";
-  src: url("/NotoSansTC-VF.ttf") format("truetype");
+  src: url("/NotoSansTC-VF.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -12,7 +12,7 @@
 
 @font-face {
   font-family: "Widget Huninn";
-  src: url("/Huninn-Regular.ttf") format("truetype");
+  src: url("/Huninn-Regular.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -155,7 +155,7 @@
 
   .text-widget-note {
     font-size: 1rem;
-    line-height: normal;
+    line-height: 1.5rem; /* 24px */
     color: var(--black3);
   }
 

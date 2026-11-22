@@ -210,8 +210,8 @@
 | 可疑帳號 | `/admin/accounts` | ID、案件狀態、查詢人數及資料連結。 |
 | 已知服務 | [official-hosts.ts](lib/server/official-hosts.ts) | 品牌別名、主網域、完整主機與來源。 |
 | TWNIC 通報資料 | [JSON 快照](data/通報TWNIC詐騙網址彙整表_20261008.json) · [比對程式](lib/server/reported-urls.ts) | 2026-10-08 本機資料；替換後重新部署。 |
-| 字級與圓角 | [globals.css](app/globals.css) | 圓角 20 px；標題 36 px、按鈕 20/28 px、內文 16/24 px、其他 16 px、風險 64 px。 |
-| 字型與錯誤字 | [globals.css](app/globals.css) | 標題／風險為 Noto Sans TC Bold，其餘 Widget 文字用 Huninn；錯誤字為 16 px 橘色。 |
+| 字級與圓角 | [globals.css](app/globals.css) | 圓角 20 px；標題 36 px、按鈕 20/28 px、內文與其他文字 16/24 px、風險 64 px。 |
+| 字型與錯誤字 | [globals.css](app/globals.css) | 標題／風險為 Noto Sans TC Bold，其餘 Widget 文字用 Huninn；以完整字集 WOFF2 載入，保留原始 TTF；錯誤字為 16/24 px 橘色。 |
 | 選單、說明、輸入 | [check-inputs.tsx](components/chatbot/check-inputs.tsx) | 入口、文案、欄位與輸入高度。 |
 | 面板與動畫 | [chatbot-widget.tsx](components/chatbot/chatbot-widget.tsx) | 查證入口、圖片預載、切頁、載入與底部操作。 |
 | 結果畫面 | [連結](components/chatbot/url-check-result.tsx) · [帳號](components/chatbot/account-check-result.tsx) · [對話](components/chatbot/dialogue-check-result.tsx) | 結論、黃色重點、說明與通報；未知連結或帳號結果提供其他查證入口。 |
@@ -232,6 +232,9 @@
 | Widget 動線 | 選單 → 選功能 → 輸入／勾選 → 結果；返回保留草稿。 |
 | 送出範圍 | 每次只送目前功能；成功清除輸入，失敗保留。 |
 | 捲動 | Widget 首頁固定標題、插圖與介紹，僅四個按鈕及「如何使用」可捲動；說明頁固定標題、插圖、框線與「回首頁」，僅框內文字可捲動；查證結果區可捲動。 |
+| 手機頁面寬度 | 根容器維持滿寬；案例卡使用相對定位，將隱藏輔助文字限制在卡片內，避免撐寬手機視窗；卡片仍可獨立橫向滑動。 |
+| 底部導覽 | ThreadsShell 固定為一個螢幕高度，上方內容區可捲動；下方導覽列以不可壓縮的獨立列常駐底部並包含安全區，聊天室填滿剩餘高度。 |
+| 橫向短螢幕 | 螢幕高度 512 px 以下時，Widget 使用可用高度、縮短標題間距與選單封面高度，保留選單捲動區及關閉按鈕。 |
 | 對話選取 | 選取區、黃色提示及面板圓角 20 px；未選時送出停用。 |
 | 對話載入 | 對話插圖＋`motion-safe:animate-bounce` 跳動文字。 |
 | 其他載入 | 連結／帳號用讀取圈；快速對話用模糊背景＋讀取圈。 |
@@ -240,6 +243,8 @@
 | 減少動態效果 | 配合系統設定，停止跳動並省略淡入上移。 |
 | 伺服器入口 | [POST /api/widget](app/api/widget/route.ts) 驗證提交、執行查證並保存結果。 |
 | 重複提交 | 以場次 ID＋提交 ID 辨識重送，避免重複處理。 |
+| 字型下載 | 完整字集 WOFF2；原始 TTF 保留供更新。 |
+| 等候逾時 | 前端最多等候 45 秒，逾時解除載入、保留輸入及提交 ID 供重試；取消等待不代表伺服器已停止處理。 |
 
 ### 資料儲存
 

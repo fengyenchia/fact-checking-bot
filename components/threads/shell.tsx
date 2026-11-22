@@ -9,8 +9,10 @@ export function ThreadsShell({
   active: "home" | "messages";
 }) {
   return (
-    <div className="min-h-dvh w-full bg-white pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
-      {children}
+    <div className="flex h-dvh w-full flex-col overflow-hidden bg-white">
+      <div className="min-h-0 min-w-0 flex-1 overflow-x-clip overflow-y-auto overscroll-y-contain">
+        {children}
+      </div>
       <ThreadsNavigation active={active} />
     </div>
   );

@@ -231,7 +231,7 @@ export function ChatbotWidget({
   const showingChatHistory = activeKind === "chat" && activeTurns.length > 0;
   const showChatIntro = activeKind === "chat";
   const coverSpacing = activeKind === null
-    ? "max-h-[30cqh] w-auto shrink-0 object-contain pt-4"
+    ? "max-h-[30cqh] w-auto shrink-0 object-contain pt-4 [@media(max-height:32rem)]:max-h-[18cqh] [@media(max-height:32rem)]:pt-0"
     : showChatIntro || activeKind === "dialogue" ? "shrink-0" : "my-auto shrink-0";
   const coverImage = (
     <Image
@@ -315,10 +315,13 @@ export function ChatbotWidget({
     setPendingKind(kind);
     if (kind === "dialogue") onDialogueSelectingChange(false);
     setErrors((current) => ({ ...current, [kind]: undefined }));
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 45_000);
     try {
       const response = await fetch("/api/widget", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           ...input,
           submissionId,
@@ -358,9 +361,12 @@ export function ChatbotWidget({
     } catch {
       setErrors((current) => ({
         ...current,
-        [kind]: "連線暫時中斷，請再試一次。",
+        [kind]: controller.signal.aborted
+          ? "查證等候逾時，請稍後重試。"
+          : "連線暫時中斷，請再試一次。",
       }));
     } finally {
+      window.clearTimeout(timeout);
       requestInProgress.current = false;
       setPendingKind(null);
     }
@@ -415,7 +421,7 @@ export function ChatbotWidget({
                 "--widget-viewport-bottom": "0px",
               } as CSSProperties
             }
-            className="widget-font fixed inset-x-0 bottom-[var(--widget-viewport-bottom)] z-50 flex h-[min(42rem,86dvh,var(--widget-viewport-height))] flex-col [container-type:size] outline-none sm:inset-x-auto sm:right-4 sm:bottom-[max(var(--widget-viewport-bottom),calc(11rem+env(safe-area-inset-bottom)))] sm:h-[min(39rem,calc(100dvh-12rem),var(--widget-viewport-height))] sm:w-105"
+            className="widget-font fixed inset-x-0 bottom-[var(--widget-viewport-bottom)] z-50 flex h-[min(42rem,86dvh,var(--widget-viewport-height))] flex-col [container-type:size] outline-none sm:inset-x-auto sm:right-4 sm:bottom-[max(var(--widget-viewport-bottom),calc(11rem+env(safe-area-inset-bottom)))] sm:h-[min(39rem,calc(100dvh-12rem),var(--widget-viewport-height))] sm:w-105 [@media(max-height:32rem)]:bottom-[var(--widget-viewport-bottom)] [@media(max-height:32rem)]:h-[min(100dvh,var(--widget-viewport-height))]"
           >
             <motion.div
               className="flex h-full min-h-0 flex-col overflow-hidden rounded-widget border border-border bg-background text-foreground shadow-xl"
@@ -431,7 +437,7 @@ export function ChatbotWidget({
                 transition={{ duration: reducedMotion ? 0 : 0.15, ease: "easeOut" }}
               >
                 <header
-                  className={showingDetailResult ? "sr-only" : "shrink-0 px-3 pt-12 text-center sm:px-5 sm:pt-7"}
+                  className={showingDetailResult ? "sr-only" : "shrink-0 px-3 pt-12 text-center sm:px-5 sm:pt-7 [@media(max-height:32rem)]:pt-3"}
                 >
                   <Dialog.Title
                     ref={headingRef}
