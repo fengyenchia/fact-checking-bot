@@ -427,14 +427,14 @@ export function ChatbotWidget({
               className="flex h-full min-h-0 flex-col overflow-hidden rounded-widget border border-border bg-background text-foreground shadow-xl"
               initial={reducedMotion ? false : { y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.17, ease: "easeOut" }}
+              transition={{ duration: 0.27, ease: "easeOut" }}
             >
               <motion.div
                 key={activeKind ?? (showInstructions ? "guide" : "menu")}
                 className="flex min-h-0 flex-1 flex-col"
                 initial={reducedMotion ? false : { opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: reducedMotion ? 0 : 0.15, ease: "easeOut" }}
+                transition={{ duration: reducedMotion ? 0 : 0.25, ease: "easeOut" }}
               >
                 <header
                   className={showingDetailResult ? "sr-only" : "shrink-0 px-3 pt-12 text-center sm:px-5 sm:pt-7 [@media(max-height:32rem)]:pt-3"}
