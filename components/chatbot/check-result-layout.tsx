@@ -36,7 +36,7 @@ export function OtherCheckActions({ onCheck }: { onCheck: (kind: FollowUpCheck) 
           {label}
         </button>
       ))}
-      <a href={digiatReportUrl} target="_blank" rel="noreferrer" className={`btn btn-yellow min-h-11 ${actionFocus}`}>
+      <a href={digiatReportUrl} target="_blank" rel="noreferrer" className={`btn btn-orange min-h-11 ${actionFocus}`}>
         前往通報
       </a>
     </div>
@@ -46,8 +46,8 @@ export function OtherCheckActions({ onCheck }: { onCheck: (kind: FollowUpCheck) 
 export function CheckReportAction() {
   return (
     <div className="text-center">
-      <a href={digiatReportUrl} target="_blank" rel="noreferrer" className={`btn btn-yellow min-h-11 w-full max-w-60 ${actionFocus}`}>
-        前往數發部通報
+      <a href={digiatReportUrl} target="_blank" rel="noreferrer" className={`btn btn-orange min-h-11 w-full max-w-60 ${actionFocus}`}>
+        前往通報
       </a>
     </div>
   );

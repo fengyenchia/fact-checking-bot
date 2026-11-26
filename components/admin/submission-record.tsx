@@ -108,7 +108,7 @@ function SubmissionRecord({ record }: { record: Submission }) {
                 {response.chatSegments.map((segment, index) => (
                   <div key={index} className="space-y-1">
                     <p className="break-all whitespace-pre-wrap">{segment.text}</p>
-                    {!!(segment.actions?.length || segment.action) && <p className="text-xs text-muted-foreground">按鈕：{(segment.actions ?? (segment.action ? [segment.action] : [])).map((action) => action === "report" ? "前往數發部通報" : `前往${checkLabels[action]}`).join("、")}</p>}
+                    {!!(segment.actions?.length || segment.action) && <p className="text-xs text-muted-foreground">按鈕：{(segment.actions ?? (segment.action ? [segment.action] : [])).map((action) => action === "report" ? "前往通報" : `前往${checkLabels[action]}`).join("、")}</p>}
                   </div>
                 ))}
               </div>

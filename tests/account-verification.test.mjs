@@ -66,7 +66,7 @@ for (const caseStatus of ["核實中", "正在核實", "高風險", null]) {
     assert.ok(html.includes(">曾被通報</h2>"));
     assert.ok(html.includes("該帳號可能涉及網購詐騙活動"));
     assert.ok(html.includes("45 人"));
-    assert.ok(html.includes("前往數發部通報"));
+    assert.ok(html.includes("前往通報"));
     assert.equal(html.includes("高風險"), false);
     assert.equal(html.includes("潛在風險"), false);
     assert.equal(html.includes("來源"), false);
@@ -80,7 +80,7 @@ test("unknown accounts display zero, a fixed explanation and four actions", asyn
   const html = htmlFor(response);
   assert.equal(response.results.account.verdict, "unknown");
   for (const text of [">無法確定</h2>", "0 人", "該帳號暫無相關通報紀錄", "帳號查證", "對話評估", "快速對話", "前往通報"]) assert.ok(html.includes(text));
-  assert.equal(html.includes("前往數發部通報"), false);
+  assert.ok(html.includes(widgetTypes.digiatReportUrl));
   assert.equal(response.explanation, null);
 });
 

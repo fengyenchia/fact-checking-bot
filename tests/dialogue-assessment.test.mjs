@@ -192,12 +192,12 @@ for (const level of ["high", "potential", "insufficient"]) {
     const response = await harness({ output: assessment(level) }).processSubmission(input());
     const html = renderToStaticMarkup(createElement(DialogueCheckResult, { turn: { response }, onCheck: () => {} }));
     assert.ok(html.includes(widgetTypes.dialogueRiskLabels[level]));
-    assert.equal(html.includes("前往數發部通報"), level !== "insufficient");
-    for (const label of ["帳號查證", "對話評估", "快速對話", "前往通報"]) {
+    assert.ok(html.includes("前往通報"));
+    for (const label of ["帳號查證", "對話評估", "快速對話"]) {
       assert.equal(html.includes(`>${label}<`), level === "insufficient");
     }
     assert.equal(html.includes("利用以下機制再次查證"), level === "insufficient");
-    if (level === "insufficient") assert.ok(html.includes(widgetTypes.digiatReportUrl));
+    assert.ok(html.includes(widgetTypes.digiatReportUrl));
     if (level !== "high") assert.equal(html.includes("極高風險"), false);
   });
 }

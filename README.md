@@ -37,7 +37,7 @@
 | 所有結果／狀況 | 顯示與後續處理 |
 | --- | --- |
 | 連結無效 | 輸入頁顯示「連結無效，請重新輸入！」；保留網址。 |
-| 曾被通報 | 黃底「可能涉及網購詐騙」、停止交易提醒及「前往數發部通報」按鈕。 |
+| 曾被通報 | 黃底「可能涉及網購詐騙」、停止交易提醒及「前往通報」按鈕。 |
 | 暫無疑慮 | 橘字「可以點開連結」，並說明對應的官方服務；沒有通報按鈕。 |
 | 存在疑慮 | 黃底「與官方網域不符」、對應品牌名稱、停止交易提醒及通報按鈕。 |
 | 無法確定 | AI 通常列出 0～3 項黃色重點，每項最多 15 字；沒有明確疑點時顯示「來源仍待確認」。另附 28 字內、手機最多兩行的說明，以及帳號查證／對話評估／快速對話／前往通報四個按鈕。 |
@@ -98,7 +98,7 @@
 
 | 所有結果／狀況 | 判斷條件 | 顯示與後續處理 |
 | --- | --- | --- |
-| 曾被通報 | 命中帳號，不論案件狀態。 | 完成提示、大結論、橘字、黃色人數列、固定通報重點與說明、數發部通報按鈕。 |
+| 曾被通報 | 命中帳號，不論案件狀態。 | 完成提示、大結論、橘字、黃色人數列、固定通報重點與說明、「前往通報」按鈕。 |
 | 無法確定 | 帳號不在查詢清單。 | 人數為 0、固定「該帳號暫無相關通報紀錄」及說明；帳號查證、對話評估、快速對話、前往通報四個按鈕。 |
 | 帳號格式錯誤 | ID 不符合格式。 | 提示輸入 Threads 帳號 ID，保留輸入。 |
 | 查證失敗 | 資料庫查詢失敗。 | 提示帳號查證暫時無法完成，保留輸入。 |
@@ -220,7 +220,7 @@
 | 結果畫面 | [連結](components/chatbot/url-check-result.tsx) · [帳號](components/chatbot/account-check-result.tsx) · [對話](components/chatbot/dialogue-check-result.tsx) | 結論、黃色重點、說明與通報；未知連結或帳號結果提供其他查證入口。 |
 | 快速對話按鈕配對 | [quick-chat-actions.ts](lib/quick-chat-actions.ts) | 配對連結與對話工具；帳號工具須通過使用者情境與段落用途檢查，不能只信 AI action。移到相符段落並去重，不影響風險判斷或 RAG。 |
 | 快速對話畫面 | [quick-chat.tsx](components/chatbot/quick-chat.tsx) · [quick-chat-reply.tsx](components/chatbot/quick-chat-reply.tsx) | 紀錄、載入、頭貼與底部案例；回覆元件排列「短段落＋對應按鈕」。首輪完成後回到頂端，後續回覆完成後對齊該輪使用者訊息開頭；捲動由 ChatbotWidget 控制。 |
-| Widget 按鈕 | [globals.css](app/globals.css) | `btn`、`btn-yellow`、`btn-black`；手機按住立即變色。 |
+| Widget 按鈕 | [globals.css](app/globals.css) | `btn` 搭配 `btn-yellow`、`btn-black` 或 `btn-orange`；通報按鈕統一橘底白字，手機按住立即變色。 |
 | Threads／後台按鈕 | [ui/button.tsx](components/ui/button.tsx) | `default`、`outline`、`ghost`；圖示用 Tabler。 |
 | 通報入口 | [types.ts](components/chatbot/types.ts) | 連結、帳號與對話評估結果使用固定數發部通報網址；快速對話只提供三個內部查證工具。 |
 

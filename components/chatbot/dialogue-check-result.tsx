@@ -42,8 +42,8 @@ export function DialogueCheckResult({ turn, onCheck }: { turn: WidgetTurn; onChe
       {hasRisk ? (
         <div className="space-y-2 text-center">
           <p className="text-widget-body">上述對話可能包含詐騙行為。<br />是否進行通報？</p>
-          <a href={digiatReportUrl} target="_blank" rel="noreferrer" className="btn btn-yellow min-h-11 focus-visible:outline-2 focus-visible:outline-ring">
-            前往數發部通報
+          <a href={digiatReportUrl} target="_blank" rel="noreferrer" className="btn btn-orange min-h-11 focus-visible:outline-2 focus-visible:outline-ring">
+            前往通報
           </a>
         </div>
       ) : (

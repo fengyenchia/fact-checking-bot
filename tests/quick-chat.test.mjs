@@ -211,7 +211,7 @@ test("stored replies without segments remain readable", () => {
   const html = renderToStaticMarkup(createElement(QuickChatReply, { response, onCheck: () => {} }));
   assert.ok(html.includes("先前保存的回覆。"));
   assert.ok(html.includes("前往帳號查證"));
-  assert.equal(html.includes("數發部通報"), false);
+  assert.equal(html.includes(widgetTypes.digiatReportUrl), false);
 });
 
 test("a failed reply displays one error instead of repeating AI and request errors", async () => {

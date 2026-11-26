@@ -197,7 +197,6 @@ for (const [url, label, showReport] of [
     response.cases = [{ title: "不應出現的案例" }];
     const html = renderToStaticMarkup(createElement(UrlCheckResult, { turn: { response }, onCheck: () => {} }));
     assert.ok(html.includes(`>${label}</h2>`));
-    assert.equal(html.includes("前往數發部通報"), showReport);
     assert.equal(html.includes("已查詢"), false);
     assert.equal(html.includes("不應出現的案例"), false);
     assert.equal(html.includes("查看其他案例"), false);
@@ -206,7 +205,7 @@ for (const [url, label, showReport] of [
     assert.equal(html.includes("帳號查證"), label === "無法確定");
     assert.equal(html.includes("對話評估"), label === "無法確定");
     assert.equal(html.includes("快速對話"), label === "無法確定");
-    assert.equal(html.includes(">前往通報<"), label === "無法確定");
+    assert.equal(html.includes(">前往通報<"), showReport || label === "無法確定");
     assert.equal(html.includes(widgetTypes.digiatReportUrl), showReport || label === "無法確定");
   });
 }
